@@ -20,7 +20,7 @@ interface Node {
 
 interface NodeEvent {
   name: string,
-  event: Event,// TODO do union here, it would be probably better
+  event: Event,// TODO do a single var with both types possible here, it would be probably better
   choice: Choice
 }
 
