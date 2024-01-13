@@ -49,7 +49,7 @@
     }
 
     :global(.outplantEffects.positive-effect) {
-        background: rgba(107, 168, 42, 0.5);
+        background: rgba(139, 241, 31, 0.5);
     }
 
     :global(.outplantEffects.negative-effect) {
