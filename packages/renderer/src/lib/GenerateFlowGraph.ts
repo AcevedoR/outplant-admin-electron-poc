@@ -3,6 +3,8 @@ import type {Event} from '../model/Event';
 import type {Choice} from '../model/Choice';
 import type {ChoiceToDisplay} from '../model/todisplay/ChoiceToDisplay';
 import { fromChoice} from '../model/todisplay/ChoiceToDisplay';
+import type {EventToDisplay} from '/@/model/todisplay/EventToDisplay';
+import { fromEvent} from '/@/model/todisplay/EventToDisplay';
 
 interface FlowGraph {
   nodes: Node[],
@@ -68,7 +70,7 @@ export function generateFlowGraph(chains: Chain[]): FlowGraph {
       }
     }
 
-    nodes.push(create_node({event_id, event}));
+    nodes.push(create_node({event_id, event: fromEvent(event, event_id, chain.effects)}));
   }
   return {
     nodes,
@@ -76,8 +78,7 @@ export function generateFlowGraph(chains: Chain[]): FlowGraph {
   };
 }
 
-function create_node(opt: {event_id: string, type?: string, event?: Event, choice?: ChoiceToDisplay}): Node {
-  // TODO next, convert Event into a EventToDisplay with full effect infos
+function create_node(opt: {event_id: string, type?: string, event?: EventToDisplay, choice?: ChoiceToDisplay}): Node {
   return {
     id: opt.event_id,
     type: opt.type ?? 'outplantEventNode',

@@ -3,33 +3,12 @@ import type {EffectToDisplay} from '/@/model/todisplay/EffectToDisplay';
 import type {Choice} from '/@/model/Choice';
 import type {Effect} from '/@/model/Effect';
 import type {ChoiceOutcome} from '/@/model/ChoiceOutcome';
+import {getFullEffects} from '/@/model/todisplay/EffectToDisplay';
 
 export interface ChoiceToDisplay {
   text: string,
   next: Array<ChoiceOutcomeToDisplay>,
   effects: EffectToDisplay[],
-}
-
-function getFullEffects(effectIDs: Record<string, boolean> | null, chainEffects: Record<string, Effect>) {
-  const populatedEffects: EffectToDisplay[] = [];
-  if (!effectIDs) {
-    return populatedEffects;
-  }
-
-  for (const effectName in effectIDs) {
-    const effect = chainEffects[effectName];
-    if (!effect) {
-      throw new Error('effect in event should exist in the Chain');
-    }
-    populatedEffects.push(
-      {
-        id: effectName,
-        wasActivated: effectIDs[effectName],
-        ...effect,
-      },
-    );
-  }
-  return populatedEffects;
 }
 
 function convertToChoiceOutcomeToDisplay(source: ChoiceOutcome[], chainEffects: Record<string, Effect>): ChoiceOutcomeToDisplay[] {

@@ -1,12 +1,17 @@
 <script lang="ts">
     import {Handle, type NodeProps, Position} from '@xyflow/svelte';
+    import OutplantEffects from '/@/OutplantEffects.svelte';
+    import type {EventToDisplay} from '/@/model/todisplay/EventToDisplay';
 
     type $$Props = NodeProps;
 
     export let data: $$Props['data'];
     export let isConnectable: $$Props['isConnectable'];
 
-    const {name} = data;
+    const event: EventToDisplay = data.event;
+    if(!event){
+        throw new Error("an Event specific node should have the 'data.event' property set");
+    }
 </script>
 
 <Handle type="target" position={Position.Left} style="background: #555;" {isConnectable}/>
@@ -17,11 +22,15 @@
         isConnectable={isConnectable}
 />
 <div>
-    {name}
+    <div class="eventDisplayBlock">{event.id}</div>
+    <OutplantEffects effects={event.effects}/>
 </div>
 
 <style>
     :global(.svelte-flow__node-outplantEventNode) {
+        display: flex;
+    }
+    :global(.svelte-flow__node-outplantEventNode .eventDisplayBlock) {
         font-size: 12px;
         background: #deab36;
         border: 1px solid #555;
