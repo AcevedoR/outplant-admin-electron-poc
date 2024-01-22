@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {getChainsFilenames} from '/ElectronAPIUtils';
+  import {getChainsFilenames} from '/@/ElectronAPIUtils';
 
   export let currentChainsDirectory: string;
   let chainsFilenamesPromise = getChainsFilenames(currentChainsDirectory)
