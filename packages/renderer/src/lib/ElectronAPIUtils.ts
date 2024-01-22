@@ -6,8 +6,9 @@ declare global {
     electronAPI: OutplantElectronAPI;
   }
 }
+
 export async function getChain(chainAbsolutePath: string): Promise<Chain> {
-  const input: Promise<string> = await window.electronAPI.openChainFile(chainAbsolutePath) as Promise<string>;
+  const input: Promise<string> = window.electronAPI.openChainFile(chainAbsolutePath) as Promise<string>;
   return input.then(x => JSON.parse(x) as Chain);
 }
 
