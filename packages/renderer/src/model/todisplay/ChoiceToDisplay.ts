@@ -6,20 +6,21 @@ import type {ChoiceOutcome} from '/@/model/ChoiceOutcome';
 import {getFullEffects} from '/@/model/todisplay/EffectToDisplay';
 
 export interface ChoiceToDisplay {
-  text: string,
-  next: Array<ChoiceOutcomeToDisplay>,
-  effects: EffectToDisplay[],
+  text: string;
+  next: Array<ChoiceOutcomeToDisplay>;
+  effects: EffectToDisplay[];
 }
 
-function convertToChoiceOutcomeToDisplay(source: ChoiceOutcome[], chainEffects: Record<string, Effect>): ChoiceOutcomeToDisplay[] {
+function convertToChoiceOutcomeToDisplay(
+  source: ChoiceOutcome[],
+  chainEffects: Record<string, Effect>,
+): ChoiceOutcomeToDisplay[] {
   const res: ChoiceOutcomeToDisplay[] = [];
   for (const choiceOutcome of source as ChoiceOutcome[]) {
-    res.push(
-      {
-        ...choiceOutcome,
-        effects: getFullEffects(choiceOutcome.effects, chainEffects),
-      },
-    );
+    res.push({
+      ...choiceOutcome,
+      effects: getFullEffects(choiceOutcome.effects, chainEffects),
+    });
   }
   return res;
 }

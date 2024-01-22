@@ -92,13 +92,17 @@ if (import.meta.env.PROD) {
     .catch(e => console.error('Failed check and install updates:', e));
 }
 
-
 function getCurrentChainsDirectory(): string {
   return '/Users/ROMAN/Documents/git-repos/unnamed-game/chains'; // TODO make this an env var, or CLI argument
 }
 
-async function getChainsFilenames(event: IpcMainInvokeEvent, chainsDirectory: string): Promise<string[]> {
-  return await fs.readdir(chainsDirectory).then(files => files.filter(f => f.includes('.json') && f !== 'schema.json'));
+async function getChainsFilenames(
+  event: IpcMainInvokeEvent,
+  chainsDirectory: string,
+): Promise<string[]> {
+  return await fs
+    .readdir(chainsDirectory)
+    .then(files => files.filter(f => f.includes('.json') && f !== 'schema.json'));
 }
 
 async function openChainFile(event: IpcMainInvokeEvent, fileAbsolutePath: string) {

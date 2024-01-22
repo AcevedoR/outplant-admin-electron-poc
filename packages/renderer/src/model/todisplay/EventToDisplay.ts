@@ -10,14 +10,18 @@ import type {NextToDisplay} from '/@/model/todisplay/NextToDisplay';
 import {fromNext} from '/@/model/todisplay/NextToDisplay';
 
 export interface EventToDisplay {
-  id: string,
-  text: string,
-  next: Array<NextToDisplay> | null,
-  effects: EffectToDisplay[],
-  choices: Array<ChoiceToDisplay> | null,
+  id: string;
+  text: string;
+  next: Array<NextToDisplay> | null;
+  effects: EffectToDisplay[];
+  choices: Array<ChoiceToDisplay> | null;
 }
 
-export function fromEvent(source: Event, sourceId: string, chainEffects: Record<string, Effect>): EventToDisplay {
+export function fromEvent(
+  source: Event,
+  sourceId: string,
+  chainEffects: Record<string, Effect>,
+): EventToDisplay {
   const fullChoices: ChoiceToDisplay[] = [];
   if (source.choices) {
     for (const choice of source.choices as Choice[]) {

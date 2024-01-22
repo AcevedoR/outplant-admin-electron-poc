@@ -5,33 +5,32 @@ import type {EventToDisplay} from '/@/model/todisplay/EventToDisplay';
 import {fromEvent} from '/@/model/todisplay/EventToDisplay';
 
 interface FlowGraph {
-  nodes: Node[],
-  edges: Edge[]
+  nodes: Node[];
+  edges: Edge[];
 }
 
 interface Node {
-  id: string,
-  type: string,
-  data: NodeEvent,
-  position: {x: number, y: number}
+  id: string;
+  type: string;
+  data: NodeEvent;
+  position: {x: number; y: number};
 }
 
 interface NodeEvent {
-  name: string,
-  event: EventToDisplay | undefined,// TODO do a single var with both types possible here, it would be probably better
-  choice: ChoiceToDisplay | undefined
+  name: string;
+  event: EventToDisplay | undefined; // TODO do a single var with both types possible here, it would be probably better
+  choice: ChoiceToDisplay | undefined;
 }
 
 interface Edge {
-  id: string,
-  type: string,
-  source: string,
-  target: string,
-  label?: string,
+  id: string;
+  type: string;
+  source: string;
+  target: string;
+  label?: string;
 }
 
 export function generateFlowGraph(chain: Chain): FlowGraph {
-
   const edges: Edge[] = [];
   const nodes: Node[] = [];
 
@@ -47,7 +46,13 @@ export function generateFlowGraph(chain: Chain): FlowGraph {
         const choice_id = `${event_id}__${i}`;
         const choice_node_id = `choice:${choice_id}`;
         edges.push(create_edge(event_id, choice_node_id));
-        nodes.push(create_node({event_id: choice_node_id, type: 'outplantChoiceNode', choice: fromChoice(choice, chain.effects)}));
+        nodes.push(
+          create_node({
+            event_id: choice_node_id,
+            type: 'outplantChoiceNode',
+            choice: fromChoice(choice, chain.effects),
+          }),
+        );
 
         // if choice has ChoiceOutcomes, link them to it
         if (choice.next && choice.next.length > 0) {
@@ -61,9 +66,7 @@ export function generateFlowGraph(chain: Chain): FlowGraph {
     // if event has 'next' events, link them to it
     if (event.next && event.next.length > 0) {
       for (const next_event of event.next) {
-        edges.push(
-          create_edge(event_id, `${chain.title}__${next_event.event}`),
-        );
+        edges.push(create_edge(event_id, `${chain.title}__${next_event.event}`));
       }
     }
 
@@ -75,7 +78,12 @@ export function generateFlowGraph(chain: Chain): FlowGraph {
   };
 }
 
-function create_node(opt: {event_id: string, type?: string, event?: EventToDisplay, choice?: ChoiceToDisplay }): Node {
+function create_node(opt: {
+  event_id: string;
+  type?: string;
+  event?: EventToDisplay;
+  choice?: ChoiceToDisplay;
+}): Node {
   return {
     id: opt.event_id,
     type: opt.type ?? 'outplantEventNode',
@@ -92,7 +100,7 @@ function create_node(opt: {event_id: string, type?: string, event?: EventToDispl
 
 function create_edge(source: string, target: string) {
   return {
-    id: `${source}-->${target}`,// TODO add in and effects
+    id: `${source}-->${target}`, // TODO add in and effects
     source: source,
     target: target,
     type: 'default',
