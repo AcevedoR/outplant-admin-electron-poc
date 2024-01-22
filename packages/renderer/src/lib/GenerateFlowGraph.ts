@@ -1,10 +1,8 @@
 import type {Chain} from '../model/Chain';
-import type {Event} from '../model/Event';
-import type {Choice} from '../model/Choice';
 import type {ChoiceToDisplay} from '../model/todisplay/ChoiceToDisplay';
-import { fromChoice} from '../model/todisplay/ChoiceToDisplay';
+import {fromChoice} from '../model/todisplay/ChoiceToDisplay';
 import type {EventToDisplay} from '/@/model/todisplay/EventToDisplay';
-import { fromEvent} from '/@/model/todisplay/EventToDisplay';
+import {fromEvent} from '/@/model/todisplay/EventToDisplay';
 
 interface FlowGraph {
   nodes: Node[],
@@ -20,8 +18,8 @@ interface Node {
 
 interface NodeEvent {
   name: string,
-  event: Event,// TODO do a single var with both types possible here, it would be probably better
-  choice: Choice
+  event: EventToDisplay | undefined,// TODO do a single var with both types possible here, it would be probably better
+  choice: ChoiceToDisplay | undefined
 }
 
 interface Edge {
@@ -32,8 +30,7 @@ interface Edge {
   label?: string,
 }
 
-export function generateFlowGraph(chains: Chain[]): FlowGraph {
-  const chain = chains[0];
+export function generateFlowGraph(chain: Chain): FlowGraph {
 
   const edges: Edge[] = [];
   const nodes: Node[] = [];
@@ -78,7 +75,7 @@ export function generateFlowGraph(chains: Chain[]): FlowGraph {
   };
 }
 
-function create_node(opt: {event_id: string, type?: string, event?: EventToDisplay, choice?: ChoiceToDisplay}): Node {
+function create_node(opt: {event_id: string, type?: string, event?: EventToDisplay, choice?: ChoiceToDisplay }): Node {
   return {
     id: opt.event_id,
     type: opt.type ?? 'outplantEventNode',

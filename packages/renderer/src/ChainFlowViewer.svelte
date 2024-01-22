@@ -14,7 +14,6 @@
 
   // 👇 this is important! You need to import the styles for Svelte Flow to work
   import '@xyflow/svelte/dist/style.css';
-  import {getExampleChains} from './lib/GetExampleChains';
   import OutplantEventNode from './OutplantEventNode.svelte';
   import type {Chain} from './model/Chain';
 
@@ -31,6 +30,7 @@
   // START handle on click node
   import { createEventDispatcher } from 'svelte';
   export let selectedContent;
+  export let chain:Chain;
   const dispatch = createEventDispatcher()
 
   function changeSelectedContent(selectedContent: string|undefined) {
@@ -55,9 +55,8 @@
   const nodeWidth = 250;
   const nodeHeight = 50;
 
-  const chains: Chain[] = getExampleChains();
 
-  let flowGraph = generateFlowGraph(chains);
+  let flowGraph = generateFlowGraph(chain);
 
   const nodes = writable(flowGraph.nodes);
   const edges = writable(flowGraph.edges);

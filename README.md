@@ -6,6 +6,7 @@ A POC of **@xyflow/svelte** running in **electron** with **vite** for our [Outpl
 I don't know what half of the confs are doing, there is probably a lot of things to fix and clean, but at least it works..
 
 ## Running
+you need to manually change your Chain folders at packages/main/src/index.ts:97
 ```
 npm install
 npm run watch
@@ -13,3 +14,9 @@ npm run watch
 
 generated from https://github.com/cawa-93/vite-electron-builder
 
+## TODO
+- write mode
+  - create event
+  - create and link another event
+  - create and link a choice
+  - create an effect for each possible node

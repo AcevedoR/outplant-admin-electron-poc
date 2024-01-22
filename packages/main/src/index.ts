@@ -1,7 +1,9 @@
-import {app} from 'electron';
+import {app, ipcMain} from 'electron';
 import './security-restrictions';
 import {restoreOrCreateWindow} from '/@/mainWindow';
 import {platform} from 'node:process';
+import {promises as fs} from 'fs';
+import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent;
 
 /**
  * Prevent electron from running multiple instances.
@@ -37,6 +39,11 @@ app.on('activate', restoreOrCreateWindow);
  */
 app
   .whenReady()
+  .then(() => {
+    ipcMain.handle('files:openChainFile', openChainFile);
+    ipcMain.handle('files:getCurrentChainsDirectory', getCurrentChainsDirectory);
+    ipcMain.handle('files:getChainsFilenames', getChainsFilenames);
+  })
   .then(restoreOrCreateWindow)
   .catch(e => console.error('Failed create window:', e));
 
@@ -83,4 +90,26 @@ if (import.meta.env.PROD) {
       require('electron-updater').autoUpdater.checkForUpdatesAndNotify(),
     )
     .catch(e => console.error('Failed check and install updates:', e));
+}
+
+
+function getCurrentChainsDirectory(): string {
+  return '/Users/ROMAN/Documents/git-repos/unnamed-game/chains'; // TODO make this an env var, or CLI argument
+}
+
+async function getChainsFilenames(event: IpcMainInvokeEvent, chainsDirectory: string): Promise<string[]> {
+  return await fs.readdir(chainsDirectory).then(files => files.filter(f => f.includes('.json') && f !== 'schema.json'));
+}
+
+async function openChainFile(event: IpcMainInvokeEvent, fileAbsolutePath: string) {
+  let file;
+  try {
+    file = await fs.readFile(fileAbsolutePath, {
+      encoding: 'utf8',
+      flag: 'r',
+    });
+  } catch (e) {
+    console.log('error while reading Chain file: ' + e);
+  }
+  return file;
 }

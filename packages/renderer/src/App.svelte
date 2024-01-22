@@ -1,16 +1,40 @@
 <script lang="ts">
   import ChainFlowViewer from '/@/ChainFlowViewer.svelte';
+  import {getChain, getCurrentChainsDirectory} from '/@/lib/ElectronAPIUtils';
+  import FileSelectionOverlay from '/@/file-selection/FileSelectionOverlay.svelte';
+  import type {Chain} from '/@/model/Chain';
 
   let selectedContent: string | undefined;
 
-  function changeSelectedContent(changedSelectedContentEvent) {
-    console.debug(changedSelectedContentEvent);
+  function changeSelectedContent(changedSelectedContentEvent: {detail: {selectedContent: string}}) {
     selectedContent = changedSelectedContentEvent.detail.selectedContent;
   }
 
+  let currentChainsDirectory: Promise<string> = getCurrentChainsDirectory();
+  let chainPromise: Promise<Chain> | undefined = undefined;
+
+  const onChainSelectionChange = (chainSelection: string): void => {
+    chainPromise = getChain(chainSelection);
+  };
 </script>
 
-<ChainFlowViewer {selectedContent} on:change={changeSelectedContent} />
+{#await currentChainsDirectory}
+  Getting directory path, this show be instantaneous
+{:then x}
+  <FileSelectionOverlay currentChainsDirectory={x} onChainSelectionChange={onChainSelectionChange} />
+{:catch someError}
+  System error: {someError.message}.
+{/await}
+
+{#if chainPromise}
+  {#await chainPromise}
+    Loading chain...
+  {:then chain}
+    <ChainFlowViewer chain={ chain} {selectedContent} on:change={changeSelectedContent} />
+  {:catch someError}
+    System error: {someError.message}.
+  {/await}
+{/if}
 
 {#if selectedContent !== undefined}
   <div id="admin-sidebar">
@@ -24,7 +48,7 @@
       </div>
 
     </div>
-    </div>
+  </div>
 {/if}
 
 
