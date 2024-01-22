@@ -1,11 +1,11 @@
 <script lang="ts">
-  import {getChainsFilenames} from '/@/lib/ElectronAPIUtils';
+  import {getChainsFilenames} from '/ElectronAPIUtils';
 
   export let currentChainsDirectory: string;
   let chainsFilenamesPromise = getChainsFilenames(currentChainsDirectory)
     .then(chains => {
-      // display first Chain at initial load
-      if (chains && chains.length > 0) {
+        // display first Chain at initial load
+        if (chains && chains.length > 0) {
           chainFileSelection = chains[0];
           onSelectChange();
           return chains;

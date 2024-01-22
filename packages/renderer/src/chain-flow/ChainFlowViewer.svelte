@@ -15,32 +15,30 @@
   // 👇 this is important! You need to import the styles for Svelte Flow to work
   import '@xyflow/svelte/dist/style.css';
   import OutplantEventNode from './OutplantEventNode.svelte';
-  import type {Chain} from './model/Chain';
+  import type {Chain} from '../model/Chain';
 
 
   // trying out autolayout
   import dagre from '@dagrejs/dagre';
 
-  import {generateFlowGraph} from './lib/GenerateFlowGraph';
+  import {generateFlowGraph} from './GenerateFlowGraph';
   import OutplantChoiceNode from './OutplantChoiceNode.svelte';
 
 
-
-
   // START handle on click node
-  import { createEventDispatcher } from 'svelte';
-  export let selectedContent;
-  export let chain:Chain;
-  const dispatch = createEventDispatcher()
+  import {createEventDispatcher} from 'svelte';
 
-  function changeSelectedContent(selectedContent: string|undefined) {
+  export let selectedContent;
+  export let chain: Chain;
+  const dispatch = createEventDispatcher();
+
+  function changeSelectedContent(selectedContent: string | undefined) {
     // first argument is the event name
     // second is an object
-    dispatch('change', { selectedContent: selectedContent });
+    dispatch('change', {selectedContent: selectedContent});
   }
+
   // END handle on click node
-
-
 
 
   const nodeTypes = {
@@ -122,10 +120,10 @@ This means that the parent container needs a height to render the flow.
     }}
     on:paneclick={(event) => changeSelectedContent(undefined)}
   >
-    <Controls  />
-    <Background  variant={BackgroundVariant.Dots} />
+    <Controls />
+    <Background variant={BackgroundVariant.Dots} />
     <MiniMap />
-    <Panel  position="top-right">
+    <Panel position="top-right">
       <button on:click={() => onLayout('TB')}>vertical layout</button>
       <button on:click={() => onLayout('LR')}>horizontal layout</button>
     </Panel>

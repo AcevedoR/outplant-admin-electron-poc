@@ -1,17 +1,16 @@
 <script lang="ts">
   import {Handle, type NodeProps, Position} from '@xyflow/svelte';
-  import OutplantEffects from '/@/OutplantEffects.svelte';
+  import OutplantEffects from '/@/chain-flow/OutplantEffects.svelte';
   import type {ChoiceToDisplay} from '/@/model/todisplay/ChoiceToDisplay';
-  import type  {Choice} from '/@/model/Choice';
 
   type $$Props = NodeProps;
 
   export let data: $$Props['data'];
   export let isConnectable: $$Props['isConnectable'];
 
-  const choice:ChoiceToDisplay= data.choice;
-  if(!choice){
-    throw new Error("a Choice specific node should have the 'data.choice' property set");
+  const choice: ChoiceToDisplay = data.choice;
+  if (!choice) {
+    throw new Error('a Choice specific node should have the \'data.choice\' property set');
   }
 </script>
 

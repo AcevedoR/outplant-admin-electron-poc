@@ -1,6 +1,6 @@
 <script lang="ts">
-  import ChainFlowViewer from '/@/ChainFlowViewer.svelte';
-  import {getChain, getCurrentChainsDirectory} from '/@/lib/ElectronAPIUtils';
+  import ChainFlowViewer from '/@/chain-flow/ChainFlowViewer.svelte';
+  import {getChain, getCurrentChainsDirectory} from '/@/ElectronAPIUtils';
   import FileSelectionOverlay from '/@/file-selection/FileSelectionOverlay.svelte';
   import type {Chain} from '/@/model/Chain';
 
