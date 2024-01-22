@@ -8,9 +8,9 @@ export {sha256sum} from './nodeCrypto';
 export {versions} from './versions';
 
 export interface OutplantElectronAPI {
-  openChainFile: (fileAbsolutePath: string) => Promise<any>;
-  getCurrentChainsDirectory: () => Promise<any>;
-  getChainsFilenames: (chainsDirectory: string) => Promise<any>;
+  openChainFile: (fileAbsolutePath: string) => Promise<unknown>;
+  getCurrentChainsDirectory: () => Promise<unknown>;
+  getChainsFilenames: (chainsDirectory: string) => Promise<unknown>;
 }
 
 contextBridge.exposeInMainWorld('electronAPI', {
