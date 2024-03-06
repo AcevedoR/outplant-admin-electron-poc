@@ -5,9 +5,8 @@ import type {Effect} from '/@/model/Effect';
 import type {ChoiceOutcome} from '/@/model/ChoiceOutcome';
 import {getFullEffects} from '/@/model/todisplay/EffectToDisplay';
 
-
 export interface ChoiceToDisplay {
-  id: ChoiceToDisplayId,
+  id: ChoiceToDisplayId;
   text: string;
   next: Array<ChoiceOutcomeToDisplay>;
   effects: EffectToDisplay[];
@@ -22,7 +21,7 @@ export class ChoiceToDisplayId {
   parentId: string;
   choiceIndex: number;
 
-  get(): string{
+  get(): string {
     return `${this.parentId}__choice-${this.choiceIndex}`;
   }
 }
@@ -33,7 +32,7 @@ function convertToChoiceOutcomeToDisplay(
   chainEffects: Record<string, Effect>,
 ): ChoiceOutcomeToDisplay[] {
   const res: ChoiceOutcomeToDisplay[] = [];
-  let i=0;
+  let i = 0;
   for (const choiceOutcome of source as ChoiceOutcome[]) {
     res.push({
       ...choiceOutcome,
@@ -45,7 +44,12 @@ function convertToChoiceOutcomeToDisplay(
   return res;
 }
 
-export function fromChoice(parentId: string, choiceIndex: number, source: Choice, chainEffects: Record<string, Effect>): ChoiceToDisplay {
+export function fromChoice(
+  parentId: string,
+  choiceIndex: number,
+  source: Choice,
+  chainEffects: Record<string, Effect>,
+): ChoiceToDisplay {
   const choiceToDisplayId = new ChoiceToDisplayId(parentId, choiceIndex);
   return {
     id: choiceToDisplayId,

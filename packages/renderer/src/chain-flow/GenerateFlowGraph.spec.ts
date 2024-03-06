@@ -25,8 +25,7 @@ describe('testing Flow Graph creation from earthquake Chain', () => {
   it('should link Events Choices', () => {
     const res = generateFlowGraph(input);
     const event_with_choices_id = 'install_better_seismometers_choice';
-    const expected_choice_id =
-      'install_better_seismometers_choice__choice-0';
+    const expected_choice_id = 'install_better_seismometers_choice__choice-0';
 
     const choice_edge = res.edges.find(
       edge => edge.source == event_with_choices_id && edge.target === expected_choice_id,
@@ -42,8 +41,7 @@ describe('testing Flow Graph creation from earthquake Chain', () => {
 
   it('should create and link ChoiceOutcomes (event.choices.event)', () => {
     const res = generateFlowGraph(input);
-    const expected_choice_id =
-      'install_better_seismometers_choice__choice-0';
+    const expected_choice_id = 'install_better_seismometers_choice__choice-0';
     const expected_next_event_id = 'earthquake_end';
 
     const choice_edge = res.edges.find(

@@ -2,7 +2,12 @@ import type {Chain} from '../model/Chain';
 import type {ChoiceToDisplayId} from '../model/todisplay/ChoiceToDisplay';
 import {updateChainFile} from '../ElectronAPIUtils';
 
-export function editChoice(chainFileAbsolutePath: string, chain: Chain, choiceId: ChoiceToDisplayId, text: string): Promise<void> {
+export function editChoice(
+  chainFileAbsolutePath: string,
+  chain: Chain,
+  choiceId: ChoiceToDisplayId,
+  text: string,
+): Promise<void> {
   const event = chain.events[choiceId.parentId];
 
   if (!event) {
@@ -15,7 +20,6 @@ export function editChoice(chainFileAbsolutePath: string, chain: Chain, choiceId
   const choice = event.choices[choiceId.choiceIndex];
   choice.text = text;
   console.log('modified choice text to: ' + choice.text);
-
 
   return requestUpdateChainFile(chainFileAbsolutePath, chain);
 }

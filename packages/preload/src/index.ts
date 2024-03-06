@@ -17,7 +17,8 @@ export interface OutplantElectronAPI {
 contextBridge.exposeInMainWorld('electronAPI', {
   openChainFile: (fileAbsolutePath: string) =>
     ipcRenderer.invoke('files:openChainFile', fileAbsolutePath),
-  updateChainFile: (fileAbsolutePath: string, content: string) => ipcRenderer.invoke('files:updateChainFile', fileAbsolutePath, content),
+  updateChainFile: (fileAbsolutePath: string, content: string) =>
+    ipcRenderer.invoke('files:updateChainFile', fileAbsolutePath, content),
   getCurrentChainsDirectory: () => ipcRenderer.invoke('files:getCurrentChainsDirectory'),
   getChainsFilenames: (chainsDirectory: string) =>
     ipcRenderer.invoke('files:getChainsFilenames', chainsDirectory),

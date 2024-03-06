@@ -7,7 +7,9 @@ declare global {
   }
 }
 
-export async function getChain(chainFileAbsolutePath: string): Promise<{chain: Chain, chainFileAbsolutePath: string}> {
+export async function getChain(
+  chainFileAbsolutePath: string,
+): Promise<{chain: Chain; chainFileAbsolutePath: string}> {
   const input: Promise<string> = window.electronAPI.openChainFile(
     chainFileAbsolutePath,
   ) as Promise<string>;
@@ -18,10 +20,7 @@ export async function getChain(chainFileAbsolutePath: string): Promise<{chain: C
 }
 
 export async function updateChainFile(chainAbsolutePath: string, content: string): Promise<void> {
-  return window.electronAPI.updateChainFile(
-    chainAbsolutePath,
-    content,
-  ) as Promise<void>;
+  return window.electronAPI.updateChainFile(chainAbsolutePath, content) as Promise<void>;
 }
 
 export async function getCurrentChainsDirectory(): Promise<string> {

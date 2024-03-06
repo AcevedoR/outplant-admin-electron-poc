@@ -119,10 +119,14 @@ async function openChainFile(event: IpcMainInvokeEvent, fileAbsolutePath: string
   return file;
 }
 
-async function updateChainFile(event: IpcMainInvokeEvent, fileAbsolutePath: string, content: string) {
+async function updateChainFile(
+  event: IpcMainInvokeEvent,
+  fileAbsolutePath: string,
+  content: string,
+) {
   let promise;
   try {
-    promise = await fs.writeFile(fileAbsolutePath, content,{
+    promise = await fs.writeFile(fileAbsolutePath, content, {
       encoding: 'utf8',
       flag: 'w',
     });
