@@ -3,15 +3,26 @@
   import {getChain, getCurrentChainsDirectory} from '/@/ElectronAPIUtils';
   import FileSelectionOverlay from '/@/file-selection/FileSelectionOverlay.svelte';
   import type {Chain} from '/@/model/Chain';
+  import AdminSidebar from '/@/admin-view/AdminSidebar.svelte';
+  import type {ChoiceToDisplay} from '/@/model/todisplay/ChoiceToDisplay';
+  import {editChoice} from '/@/file-synchronization/ChainFileModificationAPI';
 
-  let selectedContent: string | undefined;
+  let selectedContentToEdit: ChoiceToDisplay | undefined;
 
-  function changeSelectedContent(changedSelectedContentEvent: {detail: {selectedContent: string}}) {
-    selectedContent = changedSelectedContentEvent.detail.selectedContent;
+  function changeSelectedContent(changedSelectedContentEvent: {detail: {selectedContent: ChoiceToDisplay | undefined}}) {
+    selectedContentToEdit = changedSelectedContentEvent.detail.selectedContent;
+  }
+
+  function modifyChain(chainFileAbsolutePath:string, chain: Chain, modificationEvent: {detail:{type: string, id: any, content: string}}):void{
+    switch (modificationEvent.detail.type) {
+      case 'updateChoice': editChoice(chainFileAbsolutePath, chain, modificationEvent.detail.id, modificationEvent.detail.content).then(v => onChainSelectionChange(chainFileAbsolutePath));
+      break;
+      default: throw Error();
+    }
   }
 
   let currentChainsDirectory: Promise<string> = getCurrentChainsDirectory();
-  let chainPromise: Promise<Chain> | undefined = undefined;
+  let chainPromise: Promise<{chain:Chain, chainFileAbsolutePath: string}> | undefined = undefined;
 
   const onChainSelectionChange = (chainSelection: string): void => {
     chainPromise = getChain(chainSelection);
@@ -30,42 +41,25 @@
   {#await chainPromise}
     Loading chain...
   {:then chain}
-    <ChainFlowViewer chain={ chain} {selectedContent} on:change={changeSelectedContent} />
+    <ChainFlowViewer chain={chain.chain} selectedContent={selectedContentToEdit} on:change={changeSelectedContent} />
+    {#if selectedContentToEdit !== undefined}
+      <AdminSidebar selectedContentToEdit={selectedContentToEdit} on:save={e => modifyChain(chain.chainFileAbsolutePath, chain.chain, e)}/>
+    {/if}
   {:catch someError}
     System error: {someError.message}.
   {/await}
 {/if}
 
-{#if selectedContent !== undefined}
-  <div id="admin-sidebar">
 
-    <h1>Admin sidebar</h1>
-
-    <div id="selected-content-display">
-      <div>
-        <h2>text</h2>
-        <p>{selectedContent}</p>
-      </div>
-
-    </div>
-  </div>
-{/if}
 
 
 <style>
-    :global(#app) {
-        display: flex;
-        flex-direction: row;
-    }
+  :global(#app) {
+    display: flex;
+    flex-direction: row;
+  }
 
-    :global(#app #chain-flow) {
-        width: 100%;
-    }
-
-    :global(#app #admin-sidebar) {
-        width: 33%;
-        height: 100%;
-        right: 0;
-        display: block;
-    }
+  :global(#app #chain-flow) {
+    width: 100%;
+  }
 </style>

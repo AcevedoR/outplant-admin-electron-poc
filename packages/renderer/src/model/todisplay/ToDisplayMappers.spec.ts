@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest';
-import {fromChoice} from './ChoiceToDisplay';
+import {ChoiceToDisplayId, fromChoice} from './ChoiceToDisplay';
 import type {Effect} from '../Effect';
 import type {Choice} from '../Choice';
 import type {Event} from '../Event';
@@ -29,8 +29,9 @@ describe('test mapping object to display', () => {
       },
     };
 
-    const choiceToDisplay = fromChoice(source, chainEffects);
+    const choiceToDisplay = fromChoice('event_parent_id', 0, source, chainEffects);
     expect(choiceToDisplay).toEqual({
+      id: new ChoiceToDisplayId('event_parent_id', 0),
       effects: [
         {
           id: 'myEffectName',
@@ -45,6 +46,7 @@ describe('test mapping object to display', () => {
       text: 'some text',
       next: [
         {
+          id: 'event_parent_id__choice-0__outcome-0',
           event: 'event name',
           effects: [
             {
@@ -128,8 +130,10 @@ describe('test mapping object to display', () => {
       ],
       choices: [
         {
+          id: new ChoiceToDisplayId('my-event-id', 0),
           next: [
             {
+              id: 'my-event-id__choice-0__outcome-0',
               event: 'choice next event id',
               weight: 2,
               in: 3,

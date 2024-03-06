@@ -24,8 +24,10 @@ export function fromEvent(
 ): EventToDisplay {
   const fullChoices: ChoiceToDisplay[] = [];
   if (source.choices) {
+    let i = 0;
     for (const choice of source.choices as Choice[]) {
-      fullChoices.push(fromChoice(choice, chainEffects));
+      fullChoices.push(fromChoice(sourceId, i, choice, chainEffects));
+      i = i + 1;
     }
   }
   const fullNexts: NextToDisplay[] = [];

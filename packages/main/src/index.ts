@@ -41,6 +41,7 @@ app
   .whenReady()
   .then(() => {
     ipcMain.handle('files:openChainFile', openChainFile);
+    ipcMain.handle('files:updateChainFile', updateChainFile);
     ipcMain.handle('files:getCurrentChainsDirectory', getCurrentChainsDirectory);
     ipcMain.handle('files:getChainsFilenames', getChainsFilenames);
   })
@@ -116,4 +117,17 @@ async function openChainFile(event: IpcMainInvokeEvent, fileAbsolutePath: string
     console.log('error while reading Chain file: ' + e);
   }
   return file;
+}
+
+async function updateChainFile(event: IpcMainInvokeEvent, fileAbsolutePath: string, content: string) {
+  let promise;
+  try {
+    promise = await fs.writeFile(fileAbsolutePath, content,{
+      encoding: 'utf8',
+      flag: 'w',
+    });
+  } catch (e) {
+    console.log('error while writing Chain file: ' + e);
+  }
+  return promise;
 }

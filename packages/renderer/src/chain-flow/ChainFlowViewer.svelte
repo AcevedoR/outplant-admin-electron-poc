@@ -16,7 +16,7 @@
   import '@xyflow/svelte/dist/style.css';
   import OutplantEventNode from './OutplantEventNode.svelte';
   import type {Chain} from '../model/Chain';
-
+  import type {ChoiceToDisplay} from '/@/model/todisplay/ChoiceToDisplay';
 
   // trying out autolayout
   import dagre from '@dagrejs/dagre';
@@ -32,7 +32,7 @@
   export let chain: Chain;
   const dispatch = createEventDispatcher();
 
-  function changeSelectedContent(selectedContent: string | undefined) {
+  function changeSelectedContent(selectedContent: ChoiceToDisplay | undefined) {
     // first argument is the event name
     // second is an object
     dispatch('change', {selectedContent: selectedContent});
@@ -115,8 +115,7 @@ This means that the parent container needs a height to render the flow.
     {nodeTypes}
     fitView
     on:nodeclick={(event) => {
-      console.log('on node click', event.detail.node);
-      changeSelectedContent(event.detail.node.data.choice ? event.detail.node.data.choice.text : event.detail.node.data.event.text);
+      changeSelectedContent(event.detail.node.data.choice ? event.detail.node.data.choice : undefined);
     }}
     on:paneclick={(event) => changeSelectedContent(undefined)}
   >

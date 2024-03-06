@@ -35,7 +35,7 @@ export function generateFlowGraph(chain: Chain): FlowGraph {
   const nodes: Node[] = [];
 
   for (const event_name in chain.events) {
-    const event_id = `${chain.title}__${event_name}`;
+    const event_id = `${event_name}`;
 
     const event = chain.events[event_name];
 
@@ -43,21 +43,24 @@ export function generateFlowGraph(chain: Chain): FlowGraph {
     if (event.choices && event.choices.length > 0) {
       for (let i = 0; i < event.choices.length; i++) {
         const choice = event.choices[i];
-        const choice_id = `${event_id}__${i}`;
-        const choice_node_id = `choice:${choice_id}`;
+
+        const choiceToDisplay = fromChoice(event_id, i, choice, chain.effects);
+        const choice_id = choiceToDisplay.id.get();
+        const choice_node_id = `${choice_id}`;
+
         edges.push(create_edge(event_id, choice_node_id));
         nodes.push(
           create_node({
             event_id: choice_node_id,
             type: 'outplantChoiceNode',
-            choice: fromChoice(choice, chain.effects),
+            choice: choiceToDisplay,
           }),
         );
 
         // if choice has ChoiceOutcomes, link them to it
         if (choice.next && choice.next.length > 0) {
           for (const choice_outcome of choice.next) {
-            edges.push(create_edge(choice_node_id, `${chain.title}__${choice_outcome.event}`));
+            edges.push(create_edge(choice_node_id, choice_outcome.event));
           }
         }
       }
@@ -66,7 +69,7 @@ export function generateFlowGraph(chain: Chain): FlowGraph {
     // if event has 'next' events, link them to it
     if (event.next && event.next.length > 0) {
       for (const next_event of event.next) {
-        edges.push(create_edge(event_id, `${chain.title}__${next_event.event}`));
+        edges.push(create_edge(event_id, next_event.event));
       }
     }
 
