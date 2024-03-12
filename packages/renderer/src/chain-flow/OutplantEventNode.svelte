@@ -1,9 +1,9 @@
 <script lang="ts">
-    import {Handle, type NodeProps, Position} from '@xyflow/svelte';
-    import OutplantEffects from '/@/chain-flow/OutplantEffects.svelte';
-    import type {EventToDisplay} from '/@/model/todisplay/EventToDisplay';
+  import {Handle, type NodeProps, Position} from '@xyflow/svelte';
+  import OutplantEffects from '/@/chain-flow/OutplantEffects.svelte';
+  import type {EventToDisplay} from '/@/model/todisplay/EventToDisplay';
 
-    type $$Props = NodeProps;
+  type $$Props = NodeProps;
 
   export let data: $$Props['data'];
   export let isConnectable: $$Props['isConnectable'];
@@ -22,20 +22,39 @@
   isConnectable={isConnectable}
 />
 <div>
-  <div class="eventDisplayBlock">{event.id}</div>
+  <div class="eventDisplayBlock">
+    <h4>{event.id}</h4>
+    <p>
+      {event.text.replace(/ #.*$/i, '')}
+    </p>
+  </div>
   <OutplantEffects effects={event.effects} />
 </div>
 
 <style>
-    :global(.svelte-flow__node-outplantEventNode) {
-        display: flex;
-    }
+  :global(.svelte-flow__node-outplantEventNode) {
+    display: flex;
+  }
 
-    :global(.svelte-flow__node-outplantEventNode .eventDisplayBlock) {
-        font-size: 12px;
-        background: #deab36;
-        border: 1px solid #555;
-        text-align: center;
-        padding: 10px;
-    }
+  :global(.svelte-flow__node-outplantEventNode .eventDisplayBlock) {
+    font-size: 12px;
+    background: #deab36;
+    border: 1px solid #555;
+    text-align: center;
+    padding: 10px;
+  }
+
+  :global(.svelte-flow__node-outplantEventNode .eventDisplayBlock h4) {
+    margin: 0   0 5px 0;
+    padding: 0;
+  }
+
+  :global(.svelte-flow__node-outplantEventNode .eventDisplayBlock p) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    margin: 0;
+    padding: 0;
+  }
 </style>

@@ -21,8 +21,9 @@
 </script>
 
 <div>
+  <div class="outplantEffects">
   {#each effects as effect (effect)}
-    <div class="outplantEffects {effect.operation === 'add' ? 'positive-effect' : 'negative-effect'}">
+    <div class="outplantEffect {effect.operation === 'add' ? 'positive-effect' : 'negative-effect'}">
       <p>{effect.id}</p>
       <Fa class="operation-symbol" icon={effect.operation === 'add' ? faPlus : faMinus} />
       <p>{effect.value}
@@ -30,10 +31,15 @@
       <Fa class="operation-target" icon={toSymbol(effect.target)} />
     </div>
   {/each}
+  </div>
 </div>
 
 <style>
     :global(.outplantEffects) {
+      max-width: 200px;
+    }
+
+    :global(.outplantEffects .outplantEffect) {
         display: inline-flex;
         padding: 0 5px;
         font-size: 12px;
@@ -42,21 +48,21 @@
         color: black;
     }
 
-    :global(.outplantEffects .operation-symbol,.operation-target) {
+    :global(.outplantEffects .outplantEffect .operation-symbol,.operation-target) {
         display: block;
         font-size: 15px;
         margin: auto 5px auto 5px;
     }
 
-    :global(.outplantEffects.positive-effect) {
+    :global(.outplantEffects .outplantEffect.positive-effect) {
         background: rgba(139, 241, 31, 0.5);
     }
 
-    :global(.outplantEffects.negative-effect) {
+    :global(.outplantEffects .outplantEffect.negative-effect) {
         background: rgba(255, 0, 0, 0.54);
     }
 
-    :global(.outplantEffects p) {
+    :global(.outplantEffects .outplantEffect p) {
         padding: 0;
         margin: 0;
     }
