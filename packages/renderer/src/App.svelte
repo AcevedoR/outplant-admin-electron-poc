@@ -4,11 +4,12 @@
   import FileSelectionOverlay from '/@/file-selection/FileSelectionOverlay.svelte';
   import type {Chain} from '/@/model/Chain';
   import type {ChoiceToDisplay} from '/@/model/todisplay/ChoiceToDisplay';
-  import {editChoice, editEvent} from '/@/file-synchronization/ChainFileModificationAPI';
+  import {createEvent, editChoice, editEvent} from '/@/file-synchronization/ChainFileModificationAPI';
   import type {EventToDisplay} from '/@/model/todisplay/EventToDisplay';
   import {isEventToDisplay} from '/@/model/todisplay/EventToDisplay.js';
   import ChoiceEditionSidebar from '/@/admin-view/ChoiceEditionSidebar.svelte';
   import EventEditionSidebar from '/@/admin-view/EventEditionSidebar.svelte';
+  import type {CreateEvent} from '/@/file-synchronization/CreateEvent';
 
   let selectedContentToEdit: ChoiceToDisplay | EventToDisplay | undefined;
 
@@ -19,14 +20,17 @@
   }
 
   function modifyChain(chainFileAbsolutePath: string, chain: Chain, modificationEvent: {
-    detail: {type: string, id: any, content: string}
+    detail: {type: string, id: any, content: unknown}
   }): void {
     switch (modificationEvent.detail.type) {
       case 'updateChoice':
-        editChoice(chainFileAbsolutePath, chain, modificationEvent.detail.id, modificationEvent.detail.content).then(v => onChainSelectionChange(chainFileAbsolutePath));
+        editChoice(chainFileAbsolutePath, chain, modificationEvent.detail.id, modificationEvent.detail.content as string).then(v => onChainSelectionChange(chainFileAbsolutePath));
         break;
       case 'updateEvent':
-        editEvent(chainFileAbsolutePath, chain, modificationEvent.detail.id, modificationEvent.detail.content).then(v => onChainSelectionChange(chainFileAbsolutePath));
+        editEvent(chainFileAbsolutePath, chain, modificationEvent.detail.id, modificationEvent.detail.content as string).then(v => onChainSelectionChange(chainFileAbsolutePath));
+        break;
+      case 'createEvent':
+        createEvent(chainFileAbsolutePath, chain, modificationEvent.detail.content as CreateEvent).then(v => onChainSelectionChange(chainFileAbsolutePath));
         break;
       default:
         throw Error('unhandled modification event');
@@ -37,6 +41,7 @@
   let chainPromise: Promise<{chain: Chain, chainFileAbsolutePath: string}> | undefined = undefined;
 
   const onChainSelectionChange = (chainSelection: string): void => {
+    // refresh the entire chain screen
     chainPromise = getChain(chainSelection);
   };
 </script>

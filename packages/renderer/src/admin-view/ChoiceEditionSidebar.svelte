@@ -26,8 +26,6 @@
     <h2>Modifying choice: </h2>
     <h3>{selectedContentToEdit.id.get()}</h3>
     <TextEditor bind:textToEdit={selectedContentToEdit.text} on:textEdited={onSave}></TextEditor>
-    <button on:click={onSave}>Save</button>
-
   </div>
 </div>
 
