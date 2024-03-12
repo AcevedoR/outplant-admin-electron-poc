@@ -17,6 +17,7 @@
   import OutplantEventNode from './OutplantEventNode.svelte';
   import type {Chain} from '../model/Chain';
   import type {ChoiceToDisplay} from '/@/model/todisplay/ChoiceToDisplay';
+  import type {EventToDisplay} from '/@/model/todisplay/EventToDisplay';
 
   // trying out autolayout
   import dagre from '@dagrejs/dagre';
@@ -32,7 +33,7 @@
   export let chain: Chain;
   const dispatch = createEventDispatcher();
 
-  function changeSelectedContent(selectedContent: ChoiceToDisplay | undefined) {
+  function changeSelectedContent(selectedContent: ChoiceToDisplay | EventToDisplay | undefined) {
     // first argument is the event name
     // second is an object
     dispatch('change', {selectedContent: selectedContent});
@@ -115,7 +116,7 @@ This means that the parent container needs a height to render the flow.
     {nodeTypes}
     fitView
     on:nodeclick={(event) => {
-      changeSelectedContent(event.detail.node.data.choice ? event.detail.node.data.choice : undefined);
+      changeSelectedContent(event.detail.node.data.choice ? event.detail.node.data.choice : event.detail.node.data.event);
     }}
     on:paneclick={(event) => changeSelectedContent(undefined)}
   >

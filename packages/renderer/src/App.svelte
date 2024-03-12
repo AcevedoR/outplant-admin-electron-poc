@@ -3,26 +3,38 @@
   import {getChain, getCurrentChainsDirectory} from '/@/ElectronAPIUtils';
   import FileSelectionOverlay from '/@/file-selection/FileSelectionOverlay.svelte';
   import type {Chain} from '/@/model/Chain';
-  import AdminSidebar from '/@/admin-view/AdminSidebar.svelte';
   import type {ChoiceToDisplay} from '/@/model/todisplay/ChoiceToDisplay';
-  import {editChoice} from '/@/file-synchronization/ChainFileModificationAPI';
+  import {editChoice, editEvent} from '/@/file-synchronization/ChainFileModificationAPI';
+  import type {EventToDisplay} from '/@/model/todisplay/EventToDisplay';
+  import {isEventToDisplay} from '/@/model/todisplay/EventToDisplay.js';
+  import ChoiceEditionSidebar from '/@/admin-view/ChoiceEditionSidebar.svelte';
+  import EventEditionSidebar from '/@/admin-view/EventEditionSidebar.svelte';
 
-  let selectedContentToEdit: ChoiceToDisplay | undefined;
+  let selectedContentToEdit: ChoiceToDisplay | EventToDisplay | undefined;
 
-  function changeSelectedContent(changedSelectedContentEvent: {detail: {selectedContent: ChoiceToDisplay | undefined}}) {
+  function changeSelectedContent(changedSelectedContentEvent: {
+    detail: {selectedContent: ChoiceToDisplay | undefined}
+  }) {
     selectedContentToEdit = changedSelectedContentEvent.detail.selectedContent;
   }
 
-  function modifyChain(chainFileAbsolutePath:string, chain: Chain, modificationEvent: {detail:{type: string, id: any, content: string}}):void{
+  function modifyChain(chainFileAbsolutePath: string, chain: Chain, modificationEvent: {
+    detail: {type: string, id: any, content: string}
+  }): void {
     switch (modificationEvent.detail.type) {
-      case 'updateChoice': editChoice(chainFileAbsolutePath, chain, modificationEvent.detail.id, modificationEvent.detail.content).then(v => onChainSelectionChange(chainFileAbsolutePath));
-      break;
-      default: throw Error();
+      case 'updateChoice':
+        editChoice(chainFileAbsolutePath, chain, modificationEvent.detail.id, modificationEvent.detail.content).then(v => onChainSelectionChange(chainFileAbsolutePath));
+        break;
+      case 'updateEvent':
+        editEvent(chainFileAbsolutePath, chain, modificationEvent.detail.id, modificationEvent.detail.content).then(v => onChainSelectionChange(chainFileAbsolutePath));
+        break;
+      default:
+        throw Error('unhandled modification event');
     }
   }
 
   let currentChainsDirectory: Promise<string> = getCurrentChainsDirectory();
-  let chainPromise: Promise<{chain:Chain, chainFileAbsolutePath: string}> | undefined = undefined;
+  let chainPromise: Promise<{chain: Chain, chainFileAbsolutePath: string}> | undefined = undefined;
 
   const onChainSelectionChange = (chainSelection: string): void => {
     chainPromise = getChain(chainSelection);
@@ -43,14 +55,18 @@
   {:then chain}
     <ChainFlowViewer chain={chain.chain} selectedContent={selectedContentToEdit} on:change={changeSelectedContent} />
     {#if selectedContentToEdit !== undefined}
-      <AdminSidebar selectedContentToEdit={selectedContentToEdit} on:save={e => modifyChain(chain.chainFileAbsolutePath, chain.chain, e)}/>
+      {#if isEventToDisplay(selectedContentToEdit) }
+        <EventEditionSidebar selectedContentToEdit={selectedContentToEdit}
+                             on:save={e => modifyChain(chain.chainFileAbsolutePath, chain.chain, e)} />
+      {:else}
+        <ChoiceEditionSidebar selectedContentToEdit={selectedContentToEdit}
+                              on:save={e => modifyChain(chain.chainFileAbsolutePath, chain.chain, e)} />
+      {/if}
     {/if}
   {:catch someError}
     System error: {someError.message}.
   {/await}
 {/if}
-
-
 
 
 <style>

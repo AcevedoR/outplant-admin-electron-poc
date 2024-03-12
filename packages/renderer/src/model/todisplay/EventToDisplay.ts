@@ -17,6 +17,15 @@ export interface EventToDisplay {
   choices: Array<ChoiceToDisplay> | null;
 }
 
+/**
+ * user-defined type guard
+ * see https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates
+ * @param item you want to check if it has EventToDisplay type
+ */
+export function isEventToDisplay(item: any): item is EventToDisplay {
+  return 'choices' in item;
+}
+
 export function fromEvent(
   source: Event,
   sourceId: string,

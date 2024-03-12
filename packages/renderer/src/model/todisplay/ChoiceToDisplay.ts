@@ -1,9 +1,9 @@
 import type {ChoiceOutcomeToDisplay} from './ChoiceOutcomeToDisplay';
 import type {EffectToDisplay} from '/@/model/todisplay/EffectToDisplay';
+import {getFullEffects} from '/@/model/todisplay/EffectToDisplay';
 import type {Choice} from '/@/model/Choice';
 import type {Effect} from '/@/model/Effect';
 import type {ChoiceOutcome} from '/@/model/ChoiceOutcome';
-import {getFullEffects} from '/@/model/todisplay/EffectToDisplay';
 
 export interface ChoiceToDisplay {
   id: ChoiceToDisplayId;

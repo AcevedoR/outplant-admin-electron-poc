@@ -24,6 +24,24 @@ export function editChoice(
   return requestUpdateChainFile(chainFileAbsolutePath, chain);
 }
 
+export function editEvent(
+  chainFileAbsolutePath: string,
+  chain: Chain,
+  eventId: string,
+  text: string,
+): Promise<void> {
+  const event = chain.events[eventId];
+
+  if (!event) {
+    throw new Error('event should exist');
+  }
+
+  event.text = text;
+  console.log('modified event text to: ' + event.text);
+
+  return requestUpdateChainFile(chainFileAbsolutePath, chain);
+}
+
 function requestUpdateChainFile(chainFileAbsolutePath: string, chain: Chain) {
   return updateChainFile(chainFileAbsolutePath, JSON.stringify(chain, null, 2));
 }
