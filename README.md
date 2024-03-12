@@ -16,7 +16,7 @@ generated from https://github.com/cawa-93/vite-electron-builder
 
 ## TODO
 - write mode
-  - create event
-  - create and link another event
+  - ~create event~
+  - ~create and~ link another event
   - create and link a choice
   - create an effect for each possible node
