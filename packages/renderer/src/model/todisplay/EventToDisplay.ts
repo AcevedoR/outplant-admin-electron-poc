@@ -22,6 +22,7 @@ export interface EventToDisplay {
  * see https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates
  * @param item you want to check if it has EventToDisplay type
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isEventToDisplay(item: any): item is EventToDisplay {
   return 'choices' in item;
 }

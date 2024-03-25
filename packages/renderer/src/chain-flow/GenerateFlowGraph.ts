@@ -60,7 +60,7 @@ export function generateFlowGraph(chain: Chain): FlowGraph {
         // if choice has ChoiceOutcomes, link them to it
         if (choice.next && choice.next.length > 0) {
           for (const choice_outcome of choice.next) {
-            edges.push(create_edge(choice_node_id, choice_outcome.event));
+            edges.push(create_custom_edge(choice_node_id, choice_outcome.event, choice_outcome));
           }
         }
       }
@@ -69,7 +69,7 @@ export function generateFlowGraph(chain: Chain): FlowGraph {
     // if event has 'next' events, link them to it
     if (event.next && event.next.length > 0) {
       for (const next_event of event.next) {
-        edges.push(create_edge(event_id, next_event.event));
+        edges.push(create_custom_edge(event_id, next_event.event, next_event));
       }
     }
 
@@ -103,9 +103,25 @@ function create_node(opt: {
 
 function create_edge(source: string, target: string) {
   return {
-    id: `${source}-->${target}`, // TODO add in and effects
+    id: `${source}-->${target}`,
     source: source,
     target: target,
     type: 'default',
+  };
+}
+
+function create_custom_edge(
+  source: string,
+  target: string,
+  next: {in: number | null; weight: number | null} | undefined,
+) {
+  return {
+    id: `${source}-->${target}`,
+    source: source,
+    target: target,
+    type: 'outplantCustomEdge',
+    data: {
+      next: next,
+    },
   };
 }

@@ -64,7 +64,12 @@ export function createEvent(
   return linkEvent(chainFileAbsolutePath, chain, createEvent.parentEventId, createEvent.id);
 }
 
-export function linkEvent(chainFileAbsolutePath: string, chain: Chain, parentEventId: string, eventId: string): Promise<void> {
+export function linkEvent(
+  chainFileAbsolutePath: string,
+  chain: Chain,
+  parentEventId: string,
+  eventId: string,
+): Promise<void> {
   const parentEvent = chain.events[parentEventId];
   if (!parentEvent) {
     throw new Error('parent event should exist');

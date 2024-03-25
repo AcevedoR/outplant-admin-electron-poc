@@ -9,7 +9,7 @@ describe('test modification API of a Chain', () => {
   const EMPTY_CHAIN: Chain = {
     title: 'my-chain-id-1',
     events: {
-      'start': {
+      start: {
         text: 'this is the chain start event text',
         effects: {},
         choices: [],
@@ -37,11 +37,13 @@ describe('test modification API of a Chain', () => {
 
     editChoice(CHAIN_ABSOLUTE_PATH, chain, choiceId, newText);
 
-    expect(chain.events[START_EVENT_ID].choices).toEqual([{
-      text: newText,
-      effects: {},
-      next: null,
-    }]);
+    expect(chain.events[START_EVENT_ID].choices).toEqual([
+      {
+        text: newText,
+        effects: {},
+        next: null,
+      },
+    ]);
   });
 
   it('should edit event text', () => {
@@ -50,13 +52,12 @@ describe('test modification API of a Chain', () => {
 
     editEvent(CHAIN_ABSOLUTE_PATH, chain, START_EVENT_ID, newText);
 
-    expect(chain.events[START_EVENT_ID]).toEqual(
-      {
-        text: newText,
-        effects: {},
-        choices: [],
-        next: null,
-      });
+    expect(chain.events[START_EVENT_ID]).toEqual({
+      text: newText,
+      effects: {},
+      choices: [],
+      next: null,
+    });
   });
 
   it('should create event with text only', async () => {
@@ -64,14 +65,23 @@ describe('test modification API of a Chain', () => {
     const text = 'a new event with text';
     const eventId = 'my-new-event-id';
 
-    await createEvent(CHAIN_ABSOLUTE_PATH, chain, {id: eventId, text: text, parentEventId: START_EVENT_ID});
+    await createEvent(CHAIN_ABSOLUTE_PATH, chain, {
+      id: eventId,
+      text: text,
+      parentEventId: START_EVENT_ID,
+    });
 
-    expect(chain.events[START_EVENT_ID].next, 'parent event.next should have been linked to new event').toEqual([{
-      event: eventId,
-      in: null,
-      weight: null,
-      effects: null,
-    }]);
+    expect(
+      chain.events[START_EVENT_ID].next,
+      'parent event.next should have been linked to new event',
+    ).toEqual([
+      {
+        event: eventId,
+        in: null,
+        weight: null,
+        effects: null,
+      },
+    ]);
 
     expect(chain.events[eventId], 'event itself should have been created').toEqual({
       text: text,

@@ -1,5 +1,5 @@
 export interface CreateEvent {
-  id: string,
-  parentEventId: string,
-  text: string
+  id: string;
+  parentEventId: string;
+  text: string;
 }

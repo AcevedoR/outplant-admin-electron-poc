@@ -14,7 +14,8 @@
 
   // 👇 this is important! You need to import the styles for Svelte Flow to work
   import '@xyflow/svelte/dist/style.css';
-  import OutplantEventNode from './OutplantEventNode.svelte';
+  import OutplantEventNode from './OutplantEventNode.svelte'
+  import OutplantCustomEdge from './svelte-flow-customizations/edges/OutplantCustomEdge.svelte';
   import type {Chain} from '../model/Chain';
   import type {ChoiceToDisplay} from '/@/model/todisplay/ChoiceToDisplay';
   import type {EventToDisplay} from '/@/model/todisplay/EventToDisplay';
@@ -42,9 +43,15 @@
   // END handle on click node
 
 
+  // defining the custom svelte-flow elements we are going to use
+  // the library will match the property name to associated type (example: outplantEventNode -> OutplantEventNode)
   const nodeTypes = {
     outplantEventNode: OutplantEventNode,
     outplantChoiceNode: OutplantChoiceNode,
+  };
+
+  const edgeTypes = {
+    outplantCustomEdge: OutplantCustomEdge,
   };
 
   const dagreGraph = new dagre.graphlib.Graph();
@@ -114,6 +121,7 @@ This means that the parent container needs a height to render the flow.
     {nodes}
     {edges}
     {nodeTypes}
+    {edgeTypes}
     fitView
     on:nodeclick={(event) => {
       changeSelectedContent(event.detail.node.data.choice ? event.detail.node.data.choice : event.detail.node.data.event);
