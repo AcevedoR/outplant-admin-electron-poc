@@ -1,6 +1,6 @@
 <script lang="ts">
   import {Handle, type NodeProps, Position} from '@xyflow/svelte';
-  import OutplantEffects from '/@/chain-flow/OutplantEffects.svelte';
+  import OutplantEffects from './OutplantEffects.svelte';
   import type {EventToDisplay} from '/@/model/todisplay/EventToDisplay';
 
   type $$Props = NodeProps;

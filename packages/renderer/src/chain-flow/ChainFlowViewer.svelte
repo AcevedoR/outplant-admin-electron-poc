@@ -14,7 +14,7 @@
 
   // 👇 this is important! You need to import the styles for Svelte Flow to work
   import '@xyflow/svelte/dist/style.css';
-  import OutplantEventNode from './OutplantEventNode.svelte'
+  import OutplantEventNode from './svelte-flow-customizations/nodes/OutplantEventNode.svelte'
   import OutplantCustomEdge from './svelte-flow-customizations/edges/OutplantCustomEdge.svelte';
   import type {Chain} from '../model/Chain';
   import type {ChoiceToDisplay} from '/@/model/todisplay/ChoiceToDisplay';
@@ -24,7 +24,7 @@
   import dagre from '@dagrejs/dagre';
 
   import {generateFlowGraph} from './GenerateFlowGraph';
-  import OutplantChoiceNode from './OutplantChoiceNode.svelte';
+  import OutplantChoiceNode from './svelte-flow-customizations/nodes/OutplantChoiceNode.svelte';
 
 
   // START handle on click node
