@@ -6,7 +6,8 @@
   type $$Props = NodeProps;
 
   export let data: $$Props['data'];
-  export let isConnectable: $$Props['isConnectable'];
+  // export let isConnectable: $$Props['isConnectable'];
+  const isConnectable = false; // disabling edge drag and drop until we implement it (maybe?)
 
   const event: EventToDisplay = data.event;
   if (!event) {
