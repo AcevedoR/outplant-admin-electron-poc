@@ -18,6 +18,8 @@ thumbs.db
 .idea/**/dictionaries
 .idea/**/shelf
 
+.idea/misc.xml
+
 .idea/sonarlint/
 
 # Generated files
