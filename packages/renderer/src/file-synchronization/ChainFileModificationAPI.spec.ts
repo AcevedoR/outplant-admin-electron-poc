@@ -1,51 +1,35 @@
 import {describe, expect, it, vi} from 'vitest';
 import type {Chain} from '../model/Chain';
-import {createEvent, editChoice, editEvent, linkEvent} from './ChainFileModificationAPI';
+import {
+  createChoice,
+  createEvent,
+  editChoice,
+  editEvent,
+  linkEvent,
+} from './ChainFileModificationAPI';
 import {ChoiceToDisplayId} from '../model/todisplay/ChoiceToDisplay';
 
-describe('test modification API of a Chain', () => {
-  const CHAIN_ABSOLUTE_PATH: string = 'dummy chain absolute path';
-  const START_EVENT_ID: string = 'start';
-  const EMPTY_CHAIN: Chain = {
-    title: 'my-chain-id-1',
-    events: {
-      start: {
-        text: 'this is the chain start event text',
-        effects: {},
-        choices: [],
-        next: null,
-      },
-    },
-    effects: {},
-    cooldown: 1,
-    trigger: null,
-    autoSelect: true,
-  };
-
-  vi.mock('../ElectronAPIUtils');
-
-  it('should edit choice text', () => {
-    const chain = deepCopy(EMPTY_CHAIN);
-    chain.events[START_EVENT_ID].choices.push({
-      text: 'my original choice text',
+const START_EVENT_ID: string = 'start';
+const CHAIN_ABSOLUTE_PATH: string = 'dummy chain absolute path';
+const EMPTY_CHAIN: Chain = {
+  title: 'my-chain-id-1',
+  events: {
+    start: {
+      text: 'this is the chain start event text',
       effects: {},
+      choices: [],
       next: null,
-    });
+    },
+  },
+  effects: {},
+  cooldown: 1,
+  trigger: null,
+  autoSelect: true,
+};
 
-    const choiceId: ChoiceToDisplayId = new ChoiceToDisplayId(START_EVENT_ID, 0);
-    const newText = 'my new text';
+vi.mock('../ElectronAPIUtils');
 
-    editChoice(CHAIN_ABSOLUTE_PATH, chain, choiceId, newText);
-
-    expect(chain.events[START_EVENT_ID].choices).toEqual([
-      {
-        text: newText,
-        effects: {},
-        next: null,
-      },
-    ]);
-  });
-
+describe('testing modification of an Event of a Chain', () => {
   it('should edit event text', () => {
     const chain = deepCopy(EMPTY_CHAIN);
     const newText = 'my new text';
@@ -105,9 +89,64 @@ describe('test modification API of a Chain', () => {
     ).toThrowError('parent event should exist');
   });
 
-  // either ->choices or ->events but not both
-  //
-  // for choiceCreation: you can only create it from event, not choice->choice
+  // TODO either ->choices or ->events but not both
+});
+
+describe('testing modification of a Choice of a Chain', () => {
+  it('should edit choice text', () => {
+    const chain = deepCopy(EMPTY_CHAIN);
+    chain.events[START_EVENT_ID].choices.push({
+      text: 'my original choice text',
+      effects: {},
+      next: null,
+    });
+
+    const choiceId: ChoiceToDisplayId = new ChoiceToDisplayId(START_EVENT_ID, 0);
+    const newText = 'my new text';
+
+    editChoice(CHAIN_ABSOLUTE_PATH, chain, choiceId, newText);
+
+    expect(chain.events[START_EVENT_ID].choices).toEqual([
+      {
+        text: newText,
+        effects: {},
+        next: null,
+      },
+    ]);
+  });
+
+  it('should create choice', async () => {
+    const chain = deepCopy(EMPTY_CHAIN);
+    const text = 'a new choice with text';
+
+    await createChoice(CHAIN_ABSOLUTE_PATH, chain, {
+      parentEventId: START_EVENT_ID,
+      text: text,
+    });
+
+    expect(
+      chain.events[START_EVENT_ID].choices,
+      'choice should have been created on parent event',
+    ).toEqual([
+      {
+        text: text,
+        next: [],
+        effects: null,
+      },
+    ]);
+  });
+
+  it('cannot create a choice from an unexisting event', async () => {
+    const chain = deepCopy(EMPTY_CHAIN);
+    const text = 'a new choice with text';
+
+    expect(() =>
+      createChoice(CHAIN_ABSOLUTE_PATH, chain, {
+        parentEventId: 'unknown-parent-event-id',
+        text: text,
+      }),
+    ).toThrowError('choice parent event does not exist');
+  });
 });
 
 function deepCopy(variable: Chain) {
