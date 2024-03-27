@@ -127,7 +127,35 @@ describe('testing modification of an Event of a Chain', () => {
     ).toThrowError('parent event should exist');
   });
 
-  // TODO either ->choices or ->events but not both
+  it('should not allow linking an event on an event outcoming choices', async () => {
+    const chain = deepCopy(EMPTY_CHAIN);
+
+    const firstEvent = 'first-event';
+    const secondEventWithChoice = 'second-event-with-choice';
+
+    await given('given the start_event has two events', async () => {
+      await createEvent(CHAIN_ABSOLUTE_PATH, chain, {
+        id: firstEvent,
+        text: 'some text',
+        parentEventId: START_EVENT_ID,
+      });
+      await createEvent(CHAIN_ABSOLUTE_PATH, chain, {
+        id: secondEventWithChoice,
+        text: 'some text',
+        parentEventId: START_EVENT_ID,
+      });
+    });
+    await given('given the second event has a choice', async () => {
+      await createChoice(CHAIN_ABSOLUTE_PATH, chain, {
+        text: 'some text',
+        parentEventId: secondEventWithChoice,
+      });
+    });
+
+    expect(() =>
+      linkEvent(CHAIN_ABSOLUTE_PATH, chain, secondEventWithChoice, firstEvent),
+    ).toThrowError('cannot link an event on an event outcoming choices');
+  });
 });
 
 describe('testing modification of a Choice of a Chain', () => {

@@ -89,6 +89,9 @@ export function linkEvent(
   if (!parentEvent) {
     throw new Error('parent event should exist');
   }
+  if (getEventOutcomeType(parentEvent) === EventOutcomeType.CHOICES) {
+    throw new Error('cannot link an event on an event outcoming choices');
+  }
 
   if (!parentEvent.next) {
     parentEvent.next = [];
