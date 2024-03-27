@@ -23,7 +23,6 @@
       if (selectedContentToEdit.choices && selectedContentToEdit.choices.length > 0) {
         return EventOutcomeType.CHOICES;
       }
-      // TODO the original model could be perfected here.. since an event can only have one and only Outcome type
       if (selectedContentToEdit.next && selectedContentToEdit.next.length > 0) {
         return EventOutcomeType.EVENTS;
       }

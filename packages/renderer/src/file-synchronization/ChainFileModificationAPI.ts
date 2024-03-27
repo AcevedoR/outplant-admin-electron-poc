@@ -1,5 +1,6 @@
 import type {Chain} from '../model/Chain';
 import type {Event} from '../model/Event';
+import {EventOutcomeType, getEventOutcomeType} from '../model/Event';
 import type {ChoiceToDisplayId} from '../model/todisplay/ChoiceToDisplay';
 import {updateChainFile} from '../ElectronAPIUtils';
 import type {CreateEvent} from './CreateEvent';
@@ -50,6 +51,14 @@ export function createEvent(
   chain: Chain,
   createEvent: CreateEvent,
 ): Promise<void> {
+  const parentEvent = chain.events[createEvent.parentEventId];
+  if (!parentEvent) {
+    throw new Error('parent event should exist');
+  }
+  if (getEventOutcomeType(parentEvent) === EventOutcomeType.CHOICES) {
+    throw new Error('cannot create an event on an event outcoming choices');
+  }
+
   const event_with_same_id = chain.events[createEvent.id];
 
   if (event_with_same_id) {
@@ -104,6 +113,10 @@ export function createChoice(
   if (!parent_event) {
     throw new Error('choice parent event does not exist');
   }
+  if (getEventOutcomeType(parent_event) === EventOutcomeType.EVENTS) {
+    throw new Error('cannot create a choice on an event outcoming events');
+  }
+
   if (!parent_event.choices) {
     parent_event.choices = [];
   }

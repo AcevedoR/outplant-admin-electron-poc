@@ -75,6 +75,44 @@ describe('testing modification of an Event of a Chain', () => {
     });
   });
 
+  it('should not allow creating a choice on an event outcoming events', async () => {
+    const chain = deepCopy(EMPTY_CHAIN);
+
+    await given('given the start_event already has one outcoming event', async () => {
+      await createEvent(CHAIN_ABSOLUTE_PATH, chain, {
+        id: 'new-event-1',
+        text: 'some text',
+        parentEventId: START_EVENT_ID,
+      });
+    });
+
+    expect(() =>
+      createChoice(CHAIN_ABSOLUTE_PATH, chain, {
+        text: 'some text',
+        parentEventId: START_EVENT_ID,
+      }),
+    ).toThrowError('cannot create a choice on an event outcoming events');
+  });
+
+  it('should not allow creating an event on an event outcoming choices', async () => {
+    const chain = deepCopy(EMPTY_CHAIN);
+
+    await given('given the start_event already has one outcoming choice', async () => {
+      await createChoice(CHAIN_ABSOLUTE_PATH, chain, {
+        text: 'some text',
+        parentEventId: START_EVENT_ID,
+      });
+    });
+
+    expect(() =>
+      createEvent(CHAIN_ABSOLUTE_PATH, chain, {
+        id: 'eventid',
+        text: 'some text',
+        parentEventId: START_EVENT_ID,
+      }),
+    ).toThrowError('cannot create an event on an event outcoming choices');
+  });
+
   it('should not allow linking an un-existing event', async () => {
     const chain = deepCopy(EMPTY_CHAIN);
     expect(() =>
@@ -151,4 +189,7 @@ describe('testing modification of a Choice of a Chain', () => {
 
 function deepCopy(variable: Chain) {
   return JSON.parse(JSON.stringify(variable));
+}
+async function given(description: string, f: () => Promise<void>) {
+  await f();
 }
