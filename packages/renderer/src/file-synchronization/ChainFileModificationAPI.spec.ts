@@ -1,6 +1,6 @@
 import {describe, expect, it, vi} from 'vitest';
 import type {Chain} from '../model/Chain';
-import {createEvent, editChoice, editEvent} from './ChainFileModificationAPI';
+import {createEvent, editChoice, editEvent, linkEvent} from './ChainFileModificationAPI';
 import {ChoiceToDisplayId} from '../model/todisplay/ChoiceToDisplay';
 
 describe('test modification API of a Chain', () => {
@@ -90,6 +90,24 @@ describe('test modification API of a Chain', () => {
       choices: null,
     });
   });
+
+  it('should not allow linking an un-existing event', async () => {
+    const chain = deepCopy(EMPTY_CHAIN);
+    expect(() =>
+      linkEvent(CHAIN_ABSOLUTE_PATH, chain, START_EVENT_ID, 'unexisting-event-id'),
+    ).toThrowError('event should exist');
+  });
+
+  it('should not allow linking to an un-existing parent event', async () => {
+    const chain = deepCopy(EMPTY_CHAIN);
+    expect(() =>
+      linkEvent(CHAIN_ABSOLUTE_PATH, chain, 'unexisting-parent-event-id', START_EVENT_ID),
+    ).toThrowError('parent event should exist');
+  });
+
+  // either ->choices or ->events but not both
+  //
+  // for choiceCreation: you can only create it from event, not choice->choice
 });
 
 function deepCopy(variable: Chain) {

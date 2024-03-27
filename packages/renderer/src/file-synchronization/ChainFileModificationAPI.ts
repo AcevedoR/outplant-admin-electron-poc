@@ -70,6 +70,10 @@ export function linkEvent(
   parentEventId: string,
   eventId: string,
 ): Promise<void> {
+  const event = chain.events[eventId];
+  if (!event) {
+    throw new Error('event should exist');
+  }
   const parentEvent = chain.events[parentEventId];
   if (!parentEvent) {
     throw new Error('parent event should exist');
