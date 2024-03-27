@@ -4,12 +4,13 @@
   import FileSelectionOverlay from '/@/file-selection/FileSelectionOverlay.svelte';
   import type {Chain} from '/@/model/Chain';
   import type {ChoiceToDisplay} from '/@/model/todisplay/ChoiceToDisplay';
-  import {createEvent, editChoice, editEvent} from '/@/file-synchronization/ChainFileModificationAPI';
+  import {createChoice, createEvent, editChoice, editEvent} from '/@/file-synchronization/ChainFileModificationAPI';
   import type {EventToDisplay} from '/@/model/todisplay/EventToDisplay';
   import {isEventToDisplay} from '/@/model/todisplay/EventToDisplay.js';
   import ChoiceEditionSidebar from '/@/admin-view/ChoiceEditionSidebar.svelte';
   import EventEditionSidebar from '/@/admin-view/EventEditionSidebar.svelte';
   import type {CreateEvent} from '/@/file-synchronization/CreateEvent';
+  import type {CreateChoice} from '/@/file-synchronization/CreateChoice';
 
   let selectedContentToEdit: ChoiceToDisplay | EventToDisplay | undefined;
 
@@ -31,6 +32,9 @@
         break;
       case 'createEvent':
         createEvent(chainFileAbsolutePath, chain, modificationEvent.detail.content as CreateEvent).then(v => onChainSelectionChange(chainFileAbsolutePath));
+        break;
+      case 'createChoice':
+        createChoice(chainFileAbsolutePath, chain, modificationEvent.detail.content as CreateChoice).then(v => onChainSelectionChange(chainFileAbsolutePath));
         break;
       default:
         throw Error('unhandled modification event');

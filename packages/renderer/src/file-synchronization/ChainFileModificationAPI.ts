@@ -1,7 +1,9 @@
 import type {Chain} from '../model/Chain';
+import type {Event} from '../model/Event';
 import type {ChoiceToDisplayId} from '../model/todisplay/ChoiceToDisplay';
 import {updateChainFile} from '../ElectronAPIUtils';
 import type {CreateEvent} from './CreateEvent';
+import type {CreateChoice} from './CreateChoice';
 
 export function editChoice(
   chainFileAbsolutePath: string,
@@ -86,6 +88,29 @@ export function linkEvent(
     event: eventId,
     in: null,
     weight: null,
+    effects: null,
+  });
+
+  return requestUpdateChainFile(chainFileAbsolutePath, chain);
+}
+
+export function createChoice(
+  chainFileAbsolutePath: string,
+  chain: Chain,
+  createChoice: CreateChoice,
+): Promise<void> {
+  const parent_event: Event = chain.events[createChoice.parentEventId];
+
+  if (!parent_event) {
+    throw new Error('choice parent event does not exist');
+  }
+  if (!parent_event.choices) {
+    parent_event.choices = [];
+  }
+
+  parent_event.choices.push({
+    text: createChoice.text,
+    next: [],
     effects: null,
   });
 
