@@ -23,7 +23,11 @@
 <div>
   <div class="outplantEffects">
     {#each effects as effect (effect)}
-      <div class="outplantEffect {effect.operation === 'add' ? 'positive-effect' : 'negative-effect'}">
+      <div class="
+        outplantEffect
+        {effect.operation === 'add' ? 'positive-effect' : 'negative-effect'}
+        {effect.wasActivated ? '':'disabled'}
+      ">
         <p>{effect.id}</p>
         <Fa class="operation-symbol" icon={effect.operation === 'add' ? faPlus : faMinus} />
         <p>{effect.value}
@@ -55,11 +59,17 @@
   }
 
   :global(.outplantEffects .outplantEffect.positive-effect) {
-    background: rgba(139, 241, 31, 0.5);
+    background: rgba(120, 227, 0, 0.55);
   }
 
   :global(.outplantEffects .outplantEffect.negative-effect) {
     background: rgba(255, 0, 0, 0.54);
+  }
+
+  :global(.outplantEffects .outplantEffect.disabled) {
+    filter: brightness(50%);
+    border-bottom: #c300ff 1px solid;
+    text-decoration: line-through;
   }
 
   :global(.outplantEffects .outplantEffect p) {
