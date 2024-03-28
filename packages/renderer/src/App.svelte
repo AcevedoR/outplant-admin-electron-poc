@@ -60,6 +60,8 @@
   };
 </script>
 
+<svelte:window on:error={(errorEvent) => alert(errorEvent.message)}/>
+
 {#await currentChainsDirectory}
   Getting directory path, this show be instantaneous
 {:then x}
