@@ -2,8 +2,12 @@
   import type {ChoiceToDisplay} from '/@/model/todisplay/ChoiceToDisplay';
   import {createEventDispatcher} from 'svelte';
   import TextEditor from '/@/admin-view/TextEditor.svelte';
+  import EventCreationForm from '/@/admin-view/EventCreationForm.svelte';
+  import type {CreateEvent} from '/@/file-synchronization/CreateEvent';
+  import type {CreateChoiceOutcome} from '/@/file-synchronization/CreateChoiceOutcome';
 
   export let selectedContentToEdit: ChoiceToDisplay;
+  let isEventCreationFormDisplayed = false;
 
   const dispatch = createEventDispatcher();
 
@@ -16,17 +20,42 @@
     });
   };
 
+  const onEventCreation = (createEvent: CreateEvent) => {
+    console.log('creating event: ' + createEvent.id);
+    dispatch('save', {
+      type: 'createChoiceOutcome',
+      id: createEvent.id,
+      content: {
+        parentId: selectedContentToEdit.id,
+        text: createEvent.text,
+        id: createEvent.id,
+      } as CreateChoiceOutcome,
+    });
+    isEventCreationFormDisplayed = false;
+  };
+
 </script>
 <div id="choice-edition-sidebar">
 
   <h1>Admin sidebar</h1>
 
-  <div id="selected-content-display">
+  {#if isEventCreationFormDisplayed}
+    <EventCreationForm
+      parentEventId={selectedContentToEdit.id.get()}
+      on:createEvent={(createEvent) => onEventCreation(createEvent.detail)}
+    ></EventCreationForm>
+  {:else}
+    <div id="selected-content-display">
 
-    <h2>Modifying choice: </h2>
-    <h3>{selectedContentToEdit.id.get()}</h3>
-    <TextEditor bind:textToEdit={selectedContentToEdit.text} on:textEdited={onSave}></TextEditor>
-  </div>
+      <h2>Modifying choice: </h2>
+      <h3>{selectedContentToEdit.id.get()}</h3>
+      <TextEditor bind:textToEdit={selectedContentToEdit.text} on:textEdited={onSave}></TextEditor>
+    </div>
+    <hr>
+    <div id="choice-creation-section">
+      <button on:click={() => isEventCreationFormDisplayed = true}>Link a new event/choice outcome</button>
+    </div>
+  {/if}
 </div>
 
 <style>

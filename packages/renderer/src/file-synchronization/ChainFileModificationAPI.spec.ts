@@ -2,12 +2,14 @@ import {describe, expect, it, vi} from 'vitest';
 import type {Chain} from '../model/Chain';
 import {
   createChoice,
+  createChoiceOutcome,
   createEvent,
   editChoice,
   editEvent,
   linkEvent,
 } from './ChainFileModificationAPI';
 import {ChoiceToDisplayId} from '../model/todisplay/ChoiceToDisplay';
+import {v4 as uuid} from 'uuid';
 
 const START_EVENT_ID: string = 'start';
 const CHAIN_ABSOLUTE_PATH: string = 'dummy chain absolute path';
@@ -28,6 +30,8 @@ const EMPTY_CHAIN: Chain = {
 };
 
 vi.mock('../ElectronAPIUtils');
+
+const someText = 'some text';
 
 describe('testing modification of an Event of a Chain', () => {
   it('should edit event text', () => {
@@ -81,14 +85,14 @@ describe('testing modification of an Event of a Chain', () => {
     await given('given the start_event already has one outcoming event', async () => {
       await createEvent(CHAIN_ABSOLUTE_PATH, chain, {
         id: 'new-event-1',
-        text: 'some text',
+        text: someText,
         parentEventId: START_EVENT_ID,
       });
     });
 
     expect(() =>
       createChoice(CHAIN_ABSOLUTE_PATH, chain, {
-        text: 'some text',
+        text: someText,
         parentEventId: START_EVENT_ID,
       }),
     ).toThrowError('cannot create a choice on an event outcoming events');
@@ -99,7 +103,7 @@ describe('testing modification of an Event of a Chain', () => {
 
     await given('given the start_event already has one outcoming choice', async () => {
       await createChoice(CHAIN_ABSOLUTE_PATH, chain, {
-        text: 'some text',
+        text: someText,
         parentEventId: START_EVENT_ID,
       });
     });
@@ -107,7 +111,7 @@ describe('testing modification of an Event of a Chain', () => {
     expect(() =>
       createEvent(CHAIN_ABSOLUTE_PATH, chain, {
         id: 'eventid',
-        text: 'some text',
+        text: someText,
         parentEventId: START_EVENT_ID,
       }),
     ).toThrowError('cannot create an event on an event outcoming choices');
@@ -136,18 +140,18 @@ describe('testing modification of an Event of a Chain', () => {
     await given('given the start_event has two events', async () => {
       await createEvent(CHAIN_ABSOLUTE_PATH, chain, {
         id: firstEvent,
-        text: 'some text',
+        text: someText,
         parentEventId: START_EVENT_ID,
       });
       await createEvent(CHAIN_ABSOLUTE_PATH, chain, {
         id: secondEventWithChoice,
-        text: 'some text',
+        text: someText,
         parentEventId: START_EVENT_ID,
       });
     });
     await given('given the second event has a choice', async () => {
       await createChoice(CHAIN_ABSOLUTE_PATH, chain, {
-        text: 'some text',
+        text: someText,
         parentEventId: secondEventWithChoice,
       });
     });
@@ -212,6 +216,50 @@ describe('testing modification of a Choice of a Chain', () => {
         text: text,
       }),
     ).toThrowError('choice parent event does not exist');
+  });
+
+  it('should create an event from a choice', async () => {
+    const chain = deepCopy(EMPTY_CHAIN);
+    const text = 'a new event with text';
+
+    const choiceId = new ChoiceToDisplayId(START_EVENT_ID, 0);
+    const newEventId = uuid();
+    await given('given the start_event has a choice', async () => {
+      await createChoice(CHAIN_ABSOLUTE_PATH, chain, {
+        text: someText,
+        parentEventId: START_EVENT_ID,
+      });
+    });
+
+    await createChoiceOutcome(CHAIN_ABSOLUTE_PATH, chain, {
+      parentId: choiceId,
+      id: newEventId,
+      text: text,
+    });
+
+    expect(
+      chain.events[START_EVENT_ID].choices,
+      'choice should have a new outcoming event',
+    ).toEqual([
+      {
+        text: someText,
+        next: [
+          {
+            event: newEventId,
+            in: null,
+            weight: null,
+            effects: null,
+          },
+        ],
+        effects: null,
+      },
+    ]);
+    expect(chain.events[newEventId], 'new event should have been created').toEqual({
+      text: text,
+      next: null,
+      effects: null,
+      choices: null,
+    });
   });
 });
 
