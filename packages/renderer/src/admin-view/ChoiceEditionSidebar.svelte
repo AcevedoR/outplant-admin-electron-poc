@@ -5,9 +5,18 @@
   import EventCreationForm from '/@/admin-view/EventCreationForm.svelte';
   import type {CreateEvent} from '/@/file-synchronization/CreateEvent';
   import type {CreateChoiceOutcome} from '/@/file-synchronization/CreateChoiceOutcome';
+  import EffectCreationForm from '/@/admin-view/EffectCreationForm.svelte';
+  import type {CreateEffect} from '/@/file-synchronization/CreateEffect';
+  import Button from '/@/admin-view/Button.svelte';
 
   export let selectedContentToEdit: ChoiceToDisplay;
-  let isEventCreationFormDisplayed = false;
+
+
+  enum CreationFormDisplayed {
+    none, createEvent, createEffect
+  }
+
+  let currentCreationFormDisplayed = CreationFormDisplayed.none;
 
   const dispatch = createEventDispatcher();
 
@@ -31,7 +40,16 @@
         id: createEvent.id,
       } as CreateChoiceOutcome,
     });
-    isEventCreationFormDisplayed = false;
+    currentCreationFormDisplayed = CreationFormDisplayed.none;
+  };
+
+  const onEffectCreation = (createEffect: CreateEffect) => {
+    console.log('creating effect: ' + createEffect.effectName);
+    dispatch('save', {
+      type: 'createEffect',
+      content: createEffect,
+    });
+    currentCreationFormDisplayed = CreationFormDisplayed.none;
   };
 
 </script>
@@ -39,21 +57,32 @@
 
   <h1>Admin sidebar</h1>
 
-  {#if isEventCreationFormDisplayed}
+  {#if currentCreationFormDisplayed === CreationFormDisplayed.createEvent}
     <EventCreationForm
       parentEventId={selectedContentToEdit.id.get()}
-      on:createEvent={(createEvent) => onEventCreation(createEvent.detail)}
+      on:createEvent={(msg) => onEventCreation(msg.detail)}
     ></EventCreationForm>
-  {:else}
+  {:else if currentCreationFormDisplayed === CreationFormDisplayed.createEffect}
+    <EffectCreationForm
+      parentId={selectedContentToEdit.id}
+      on:createEffect={(msg) => onEffectCreation(msg.detail)}
+    ></EffectCreationForm>
+  {:else if currentCreationFormDisplayed === CreationFormDisplayed.none}
     <div id="selected-content-display">
-
       <h2>Modifying choice: </h2>
       <h3>{selectedContentToEdit.id.get()}</h3>
       <TextEditor bind:textToEdit={selectedContentToEdit.text} on:textEdited={onSave}></TextEditor>
     </div>
     <hr>
     <div id="choice-creation-section">
-      <button on:click={() => isEventCreationFormDisplayed = true}>Link a new event/choice outcome</button>
+      <Button on:click={() => currentCreationFormDisplayed = CreationFormDisplayed.createEvent}>
+        Link a new event/choice outcome
+      </Button>
+    </div>
+    <div id="choice-effect-creation-section">
+      <Button on:click={() => currentCreationFormDisplayed = CreationFormDisplayed.createEffect}>
+        Link a new effect
+      </Button>
     </div>
   {/if}
 </div>
@@ -76,5 +105,8 @@
     border: 1px solid black;
     background-color: rgba(213, 193, 145, 0.65);
     padding: 20px;
+  }
+  :global(hr){
+    border: 10px solid #232223;
   }
 </style>

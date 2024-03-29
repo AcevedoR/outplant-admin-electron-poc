@@ -22,6 +22,6 @@ generated from https://github.com/cawa-93/vite-electron-builder
   - link another choice from event
   - link another event from event
   - ~create an effect from event~
-  - create an effect from a choice
+  - ~create an effect from a choice~
   - link an effect to event
   - link an effect to choice

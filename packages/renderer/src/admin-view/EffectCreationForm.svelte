@@ -9,6 +9,7 @@
   import Select from '/@/admin-view/Select.svelte';
   import type {CreateEffect} from '/@/file-synchronization/CreateEffect';
   import type {Effect} from '/@/model/Effect';
+  import Checkbox from '/@/admin-view/Checkbox.svelte';
 
   export let parentId: EventId | ChoiceToDisplayId;
 
@@ -18,7 +19,7 @@
   let target: ChangeTarget;
   let value: number;
   let type: EffectType;
-  let activated: boolean;
+  let activated: boolean = true;
 
   const dispatch = createEventDispatcher();
 
@@ -156,13 +157,13 @@
       <option value="instant">instant</option>
       <option value="permanent">permanent</option>
     </Select>
-    <Select
+    <Checkbox
       label="activated"
       bind:value={activated}
     >
       <option value="true">true</option>
       <option value="false">false</option>
-    </Select>
+    </Checkbox>
     <button type="submit">create effect</button>
   </form>
 </div>

@@ -318,7 +318,7 @@ describe('testing effect creation', () => {
       operation: 'add',
       target: 'population',
     };
-    const activated = true;
+    const activated = false;
 
     createEffect(CHAIN_ABSOLUTE_PATH, chain, {
       parentId: {parentId: START_EVENT_ID.value, choiceIndex: 0} as ChoiceToDisplayId,

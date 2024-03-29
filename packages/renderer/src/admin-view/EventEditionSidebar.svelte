@@ -8,6 +8,7 @@
   import type {CreateChoice} from '/@/file-synchronization/CreateChoice';
   import EffectCreationForm from '/@/admin-view/EffectCreationForm.svelte';
   import type {CreateEffect} from '/@/file-synchronization/CreateEffect';
+  import Button from '/@/admin-view/Button.svelte';
 
   export let selectedContentToEdit: EventToDisplay;
 
@@ -103,19 +104,19 @@
     <hr>
     {#if eventOutcomeType === EventOutcomeType.EVENTS || eventOutcomeType === EventOutcomeType.NONE}
       <div id="event-creation-section">
-        <button on:click={() => currentCreationFormDisplayed =  CreationFormDisplayed.createEvent}>Link a new event
-        </button>
+        <Button on:click={() => currentCreationFormDisplayed =  CreationFormDisplayed.createEvent}>Link a new event
+        </Button>
       </div>
     {/if}
     {#if eventOutcomeType === EventOutcomeType.CHOICES || eventOutcomeType === EventOutcomeType.NONE}
       <div id="choice-creation-section">
-        <button on:click={() =>  currentCreationFormDisplayed =  CreationFormDisplayed.createChoice}>Link a new choice
-        </button>
+        <Button on:click={() =>  currentCreationFormDisplayed =  CreationFormDisplayed.createChoice}>Link a new choice
+        </Button>
       </div>
     {/if}
     <div id="choice-effect-creation-section">
-      <button on:click={() => currentCreationFormDisplayed =  CreationFormDisplayed.createEffect}>Link a new effect
-      </button>
+      <Button on:click={() => currentCreationFormDisplayed =  CreationFormDisplayed.createEffect}>Link a new effect
+      </Button>
     </div>
   {/if}
 </div>
@@ -128,5 +129,8 @@
     display: block;
     background-color: #5e548e;
     /*#e0b1cb     #3c365a*/
+  }
+  :global(hr){
+    border: 10px solid #232223;
   }
 </style>
