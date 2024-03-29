@@ -26,6 +26,16 @@ export class ChoiceToDisplayId {
   }
 }
 
+/**
+ * user-defined type guard
+ * see https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates
+ * @param item you want to check if it has ChoiceToDisplayId type
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isChoiceToDisplayId(item: any): item is ChoiceToDisplayId {
+  return 'choiceIndex' in item;
+}
+
 function convertToChoiceOutcomeToDisplay(
   parentId: ChoiceToDisplayId,
   source: ChoiceOutcome[],

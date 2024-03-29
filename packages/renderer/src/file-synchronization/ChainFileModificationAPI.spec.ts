@@ -3,6 +3,7 @@ import type {Chain} from '../model/Chain';
 import {
   createChoice,
   createChoiceOutcome,
+  createEffect,
   createEvent,
   editChoice,
   editEvent,
@@ -10,8 +11,11 @@ import {
 } from './ChainFileModificationAPI';
 import {ChoiceToDisplayId} from '../model/todisplay/ChoiceToDisplay';
 import {v4 as uuid} from 'uuid';
+import type {Effect} from '../model/Effect';
+import type {EventId} from '../model/todisplay/EventId';
 
-const START_EVENT_ID: string = 'start';
+const START_EVENT_ID_DEPRECATED: string = 'start'; // TODO replace with below EntityId
+const START_EVENT_ID: EventId = {value: START_EVENT_ID_DEPRECATED}; // TODO replace with below EntityId
 const CHAIN_ABSOLUTE_PATH: string = 'dummy chain absolute path';
 const EMPTY_CHAIN: Chain = {
   title: 'my-chain-id-1',
@@ -38,9 +42,9 @@ describe('testing modification of an Event of a Chain', () => {
     const chain = deepCopy(EMPTY_CHAIN);
     const newText = 'my new text';
 
-    editEvent(CHAIN_ABSOLUTE_PATH, chain, START_EVENT_ID, newText);
+    editEvent(CHAIN_ABSOLUTE_PATH, chain, START_EVENT_ID_DEPRECATED, newText);
 
-    expect(chain.events[START_EVENT_ID]).toEqual({
+    expect(chain.events[START_EVENT_ID_DEPRECATED]).toEqual({
       text: newText,
       effects: {},
       choices: [],
@@ -56,11 +60,11 @@ describe('testing modification of an Event of a Chain', () => {
     await createEvent(CHAIN_ABSOLUTE_PATH, chain, {
       id: eventId,
       text: text,
-      parentEventId: START_EVENT_ID,
+      parentEventId: START_EVENT_ID_DEPRECATED,
     });
 
     expect(
-      chain.events[START_EVENT_ID].next,
+      chain.events[START_EVENT_ID_DEPRECATED].next,
       'parent event.next should have been linked to new event',
     ).toEqual([
       {
@@ -86,14 +90,14 @@ describe('testing modification of an Event of a Chain', () => {
       await createEvent(CHAIN_ABSOLUTE_PATH, chain, {
         id: 'new-event-1',
         text: someText,
-        parentEventId: START_EVENT_ID,
+        parentEventId: START_EVENT_ID_DEPRECATED,
       });
     });
 
     expect(() =>
       createChoice(CHAIN_ABSOLUTE_PATH, chain, {
         text: someText,
-        parentEventId: START_EVENT_ID,
+        parentEventId: START_EVENT_ID_DEPRECATED,
       }),
     ).toThrowError('cannot create a choice on an event outcoming events');
   });
@@ -104,7 +108,7 @@ describe('testing modification of an Event of a Chain', () => {
     await given('given the start_event already has one outcoming choice', async () => {
       await createChoice(CHAIN_ABSOLUTE_PATH, chain, {
         text: someText,
-        parentEventId: START_EVENT_ID,
+        parentEventId: START_EVENT_ID_DEPRECATED,
       });
     });
 
@@ -112,7 +116,7 @@ describe('testing modification of an Event of a Chain', () => {
       createEvent(CHAIN_ABSOLUTE_PATH, chain, {
         id: 'eventid',
         text: someText,
-        parentEventId: START_EVENT_ID,
+        parentEventId: START_EVENT_ID_DEPRECATED,
       }),
     ).toThrowError('cannot create an event on an event outcoming choices');
   });
@@ -120,14 +124,19 @@ describe('testing modification of an Event of a Chain', () => {
   it('should not allow linking an un-existing event', async () => {
     const chain = deepCopy(EMPTY_CHAIN);
     expect(() =>
-      linkEvent(CHAIN_ABSOLUTE_PATH, chain, START_EVENT_ID, 'unexisting-event-id'),
+      linkEvent(CHAIN_ABSOLUTE_PATH, chain, START_EVENT_ID_DEPRECATED, 'unexisting-event-id'),
     ).toThrowError('event should exist');
   });
 
   it('should not allow linking to an un-existing parent event', async () => {
     const chain = deepCopy(EMPTY_CHAIN);
     expect(() =>
-      linkEvent(CHAIN_ABSOLUTE_PATH, chain, 'unexisting-parent-event-id', START_EVENT_ID),
+      linkEvent(
+        CHAIN_ABSOLUTE_PATH,
+        chain,
+        'unexisting-parent-event-id',
+        START_EVENT_ID_DEPRECATED,
+      ),
     ).toThrowError('parent event should exist');
   });
 
@@ -141,12 +150,12 @@ describe('testing modification of an Event of a Chain', () => {
       await createEvent(CHAIN_ABSOLUTE_PATH, chain, {
         id: firstEvent,
         text: someText,
-        parentEventId: START_EVENT_ID,
+        parentEventId: START_EVENT_ID_DEPRECATED,
       });
       await createEvent(CHAIN_ABSOLUTE_PATH, chain, {
         id: secondEventWithChoice,
         text: someText,
-        parentEventId: START_EVENT_ID,
+        parentEventId: START_EVENT_ID_DEPRECATED,
       });
     });
     await given('given the second event has a choice', async () => {
@@ -165,18 +174,18 @@ describe('testing modification of an Event of a Chain', () => {
 describe('testing modification of a Choice of a Chain', () => {
   it('should edit choice text', () => {
     const chain = deepCopy(EMPTY_CHAIN);
-    chain.events[START_EVENT_ID].choices.push({
+    chain.events[START_EVENT_ID_DEPRECATED].choices.push({
       text: 'my original choice text',
       effects: {},
       next: null,
     });
 
-    const choiceId: ChoiceToDisplayId = new ChoiceToDisplayId(START_EVENT_ID, 0);
+    const choiceId: ChoiceToDisplayId = new ChoiceToDisplayId(START_EVENT_ID_DEPRECATED, 0);
     const newText = 'my new text';
 
     editChoice(CHAIN_ABSOLUTE_PATH, chain, choiceId, newText);
 
-    expect(chain.events[START_EVENT_ID].choices).toEqual([
+    expect(chain.events[START_EVENT_ID_DEPRECATED].choices).toEqual([
       {
         text: newText,
         effects: {},
@@ -190,12 +199,12 @@ describe('testing modification of a Choice of a Chain', () => {
     const text = 'a new choice with text';
 
     await createChoice(CHAIN_ABSOLUTE_PATH, chain, {
-      parentEventId: START_EVENT_ID,
+      parentEventId: START_EVENT_ID_DEPRECATED,
       text: text,
     });
 
     expect(
-      chain.events[START_EVENT_ID].choices,
+      chain.events[START_EVENT_ID_DEPRECATED].choices,
       'choice should have been created on parent event',
     ).toEqual([
       {
@@ -222,12 +231,12 @@ describe('testing modification of a Choice of a Chain', () => {
     const chain = deepCopy(EMPTY_CHAIN);
     const text = 'a new event with text';
 
-    const choiceId = new ChoiceToDisplayId(START_EVENT_ID, 0);
+    const choiceId = new ChoiceToDisplayId(START_EVENT_ID_DEPRECATED, 0);
     const newEventId = uuid();
     await given('given the start_event has a choice', async () => {
       await createChoice(CHAIN_ABSOLUTE_PATH, chain, {
         text: someText,
-        parentEventId: START_EVENT_ID,
+        parentEventId: START_EVENT_ID_DEPRECATED,
       });
     });
 
@@ -238,7 +247,7 @@ describe('testing modification of a Choice of a Chain', () => {
     });
 
     expect(
-      chain.events[START_EVENT_ID].choices,
+      chain.events[START_EVENT_ID_DEPRECATED].choices,
       'choice should have a new outcoming event',
     ).toEqual([
       {
@@ -260,6 +269,72 @@ describe('testing modification of a Choice of a Chain', () => {
       effects: null,
       choices: null,
     });
+  });
+});
+
+describe('testing effect creation', () => {
+  it('should create effect on an event', () => {
+    const chain = deepCopy(EMPTY_CHAIN);
+    const effectName = 'my-new-effect';
+    const newEffect: Effect = {
+      description: 'desc',
+      type: 'instant',
+      value: 1,
+      operation: 'add',
+      target: 'population',
+    };
+    const activated = true;
+
+    createEffect(CHAIN_ABSOLUTE_PATH, chain, {
+      parentId: START_EVENT_ID,
+      effectName: effectName,
+      newEffect: newEffect,
+      activated: activated,
+    });
+
+    expect(chain.effects, 'effect should have been created in the chain').toEqual({
+      'my-new-effect': newEffect,
+    });
+
+    expect(
+      chain.events[START_EVENT_ID.value],
+      'effect should have been trigger in event',
+    ).toHaveProperty('effects', {'my-new-effect': activated});
+  });
+
+  it('should create effect on an choice', () => {
+    const chain = deepCopy(EMPTY_CHAIN);
+    given('given a choice without effects', async () =>
+      createChoice(CHAIN_ABSOLUTE_PATH, chain, {
+        text: someText,
+        parentEventId: START_EVENT_ID.value,
+      }),
+    );
+    const effectName = 'my-new-effect';
+    const newEffect: Effect = {
+      description: 'desc',
+      type: 'instant',
+      value: 1,
+      operation: 'add',
+      target: 'population',
+    };
+    const activated = true;
+
+    createEffect(CHAIN_ABSOLUTE_PATH, chain, {
+      parentId: {parentId: START_EVENT_ID.value, choiceIndex: 0} as ChoiceToDisplayId,
+      effectName: effectName,
+      newEffect: newEffect,
+      activated: activated,
+    });
+
+    expect(chain.effects, 'effect should have been created in the chain').toEqual({
+      'my-new-effect': newEffect,
+    });
+
+    expect(
+      chain.events[START_EVENT_ID.value].choices[0],
+      'effect should have been trigger in choice',
+    ).toHaveProperty('effects', {'my-new-effect': activated});
   });
 });
 

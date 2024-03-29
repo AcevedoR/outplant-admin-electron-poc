@@ -7,6 +7,7 @@
   import {
     createChoice,
     createChoiceOutcome,
+    createEffect,
     createEvent,
     editChoice,
     editEvent,
@@ -18,6 +19,7 @@
   import type {CreateEvent} from '/@/file-synchronization/CreateEvent';
   import type {CreateChoice} from '/@/file-synchronization/CreateChoice';
   import type {CreateChoiceOutcome} from '/@/file-synchronization/CreateChoiceOutcome';
+  import type {CreateEffect} from '/@/file-synchronization/CreateEffect';
 
   let selectedContentToEdit: ChoiceToDisplay | EventToDisplay | undefined;
 
@@ -46,6 +48,9 @@
       case 'createChoiceOutcome':
         createChoiceOutcome(chainFileAbsolutePath, chain, modificationEvent.detail.content as CreateChoiceOutcome).then(v => onChainSelectionChange(chainFileAbsolutePath));
         break;
+      case 'createEffect':
+        createEffect(chainFileAbsolutePath, chain, modificationEvent.detail.content as CreateEffect).then(v => onChainSelectionChange(chainFileAbsolutePath));
+        break;
       default:
         throw Error('unhandled modification event: ' + modificationEvent.detail.type);
     }
@@ -60,7 +65,7 @@
   };
 </script>
 
-<svelte:window on:error={(errorEvent) => alert(errorEvent.message)}/>
+<svelte:window on:error={(errorEvent) => alert(errorEvent.message)} />
 
 {#await currentChainsDirectory}
   Getting directory path, this show be instantaneous

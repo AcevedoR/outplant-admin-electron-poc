@@ -6,11 +6,16 @@
   import type {CreateEvent} from '/@/file-synchronization/CreateEvent';
   import ChoiceCreationForm from '/@/admin-view/ChoiceCreationForm.svelte';
   import type {CreateChoice} from '/@/file-synchronization/CreateChoice';
+  import EffectCreationForm from '/@/admin-view/EffectCreationForm.svelte';
+  import type {CreateEffect} from '/@/file-synchronization/CreateEffect';
 
   export let selectedContentToEdit: EventToDisplay;
 
-  let isEventCreationFormDisplayed = false;
-  let isChoiceCreationFormDisplayed = false;
+  enum CreationFormDisplayed {
+    none, createEvent, createChoice, createEffect
+  }
+
+  let currentCreationFormDisplayed: CreationFormDisplayed = CreationFormDisplayed.none;
 
   enum EventOutcomeType {
     NONE, CHOICES, EVENTS
@@ -47,7 +52,7 @@
       id: createEvent.id,
       content: createEvent,
     });
-    isEventCreationFormDisplayed = false;
+    currentCreationFormDisplayed = CreationFormDisplayed.none;
   };
 
   const onChoiceCreation = (createChoice: CreateChoice) => {
@@ -56,7 +61,16 @@
       type: 'createChoice',
       content: createChoice,
     });
-    isChoiceCreationFormDisplayed = false;
+    currentCreationFormDisplayed = CreationFormDisplayed.none;
+  };
+
+  const onEffectCreation = (createEffect: CreateEffect) => {
+    console.log('creating effect');
+    dispatch('save', {
+      type: 'createEffect',
+      content: createEffect,
+    });
+    currentCreationFormDisplayed = CreationFormDisplayed.none;
   };
 
 </script>
@@ -64,17 +78,22 @@
 
   <h1>Admin sidebar</h1>
 
-  {#if isEventCreationFormDisplayed}
+  {#if currentCreationFormDisplayed === CreationFormDisplayed.createEvent }
     <EventCreationForm
       parentEventId={selectedContentToEdit.id}
       on:createEvent={(createEvent) => onEventCreation(createEvent.detail)}
     ></EventCreationForm>
-  {:else if isChoiceCreationFormDisplayed}
+  {:else if currentCreationFormDisplayed === CreationFormDisplayed.createChoice }
     <ChoiceCreationForm
       parentEventId={selectedContentToEdit.id}
       on:createChoice={(createChoice) => onChoiceCreation(createChoice.detail)}
     ></ChoiceCreationForm>
-  {:else}
+  {:else if currentCreationFormDisplayed === CreationFormDisplayed.createEffect}
+    <EffectCreationForm
+      parentId={{value: selectedContentToEdit.id}}
+      on:createEffect={(createEffect) => onEffectCreation(createEffect.detail)}
+    ></EffectCreationForm>
+  {:else if currentCreationFormDisplayed === CreationFormDisplayed.none}
 
     <div id="selected-content-display">
       <h2>Modifying event: </h2>
@@ -84,14 +103,20 @@
     <hr>
     {#if eventOutcomeType === EventOutcomeType.EVENTS || eventOutcomeType === EventOutcomeType.NONE}
       <div id="event-creation-section">
-        <button on:click={() => isEventCreationFormDisplayed = true}>Link a new event</button>
+        <button on:click={() => currentCreationFormDisplayed =  CreationFormDisplayed.createEvent}>Link a new event
+        </button>
       </div>
     {/if}
     {#if eventOutcomeType === EventOutcomeType.CHOICES || eventOutcomeType === EventOutcomeType.NONE}
       <div id="choice-creation-section">
-        <button on:click={() => isChoiceCreationFormDisplayed = true}>Link a new choice</button>
+        <button on:click={() =>  currentCreationFormDisplayed =  CreationFormDisplayed.createChoice}>Link a new choice
+        </button>
       </div>
     {/if}
+    <div id="choice-effect-creation-section">
+      <button on:click={() => currentCreationFormDisplayed =  CreationFormDisplayed.createEffect}>Link a new effect
+      </button>
+    </div>
   {/if}
 </div>
 

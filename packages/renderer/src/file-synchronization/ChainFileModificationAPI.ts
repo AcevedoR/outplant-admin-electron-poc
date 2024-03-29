@@ -2,10 +2,14 @@ import type {Chain} from '../model/Chain';
 import type {Event} from '../model/Event';
 import {EventOutcomeType, getEventOutcomeType} from '../model/Event';
 import type {ChoiceToDisplayId} from '../model/todisplay/ChoiceToDisplay';
+import {isChoiceToDisplayId} from '../model/todisplay/ChoiceToDisplay';
 import {updateChainFile} from '../ElectronAPIUtils';
 import type {CreateEvent} from './CreateEvent';
 import type {CreateChoice} from './CreateChoice';
 import type {CreateChoiceOutcome} from '/@/file-synchronization/CreateChoiceOutcome';
+import type {CreateEffect} from '/@/file-synchronization/CreateEffect';
+import type {EventId} from '/@/model/todisplay/EventId';
+import type {LinkEffect} from '/@/file-synchronization/LinkEffect';
 
 export function editChoice(
   chainFileAbsolutePath: string,
@@ -170,6 +174,70 @@ export function createChoiceOutcome(
     effects: null,
   };
 
+  return requestUpdateChainFile(chainFileAbsolutePath, chain);
+}
+
+export function createEffect(
+  chainFileAbsolutePath: string,
+  chain: Chain,
+  createEffect: CreateEffect,
+): Promise<void> {
+  console.debug(createEffect);
+  if (chain.effects[createEffect.effectName]) {
+    throw new Error('cannot create effect, it already exists');
+  }
+  chain.effects[createEffect.effectName] = createEffect.newEffect;
+
+  return linkEffect(chainFileAbsolutePath, chain, {
+    parentId: createEffect.parentId,
+    effectName: createEffect.effectName,
+    activated: createEffect.activated,
+  });
+}
+
+export function linkEffect(
+  chainFileAbsolutePath: string,
+  chain: Chain,
+  linkEffect: LinkEffect,
+): Promise<void> {
+  if (isChoiceToDisplayId(linkEffect.parentId)) {
+    const choiceId = linkEffect.parentId as ChoiceToDisplayId;
+    const parentEvent = chain.events[choiceId.parentId];
+    if (!parentEvent) {
+      throw new Error('choice parent event could not be found');
+    }
+    if (!parentEvent.choices) {
+      parentEvent.choices = [];
+    }
+
+    const choice = parentEvent.choices[choiceId.choiceIndex];
+    if (!choice) {
+      throw new Error('choice could not be found');
+    }
+    if (!choice.effects) {
+      choice.effects = {};
+    }
+    if (choice.effects[linkEffect.effectName]) {
+      throw new Error('effect is already triggered by this choice');
+    }
+
+    choice.effects[linkEffect.effectName] = linkEffect.activated;
+  } else {
+    const eventId = linkEffect.parentId as EventId;
+    const event = chain.events[eventId.value];
+
+    if (!event) {
+      throw new Error('event could not be found');
+    }
+    if (!event.effects) {
+      event.effects = {};
+    }
+    if (event.effects[linkEffect.effectName]) {
+      throw new Error('event already have this effect triggered');
+    }
+
+    event.effects[linkEffect.effectName] = linkEffect.activated;
+  }
   return requestUpdateChainFile(chainFileAbsolutePath, chain);
 }
 
