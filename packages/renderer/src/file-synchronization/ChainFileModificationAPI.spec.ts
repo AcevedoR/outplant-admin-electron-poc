@@ -83,6 +83,41 @@ describe('testing modification of an Event of a Chain', () => {
     });
   });
 
+  it('should create event with text, in and weight', async () => {
+    const chain = deepCopy(EMPTY_CHAIN);
+    const text = 'a new event with text';
+    const eventId = uuid();
+    const weight = 2;
+    const inn = 3;
+
+    await createEvent(CHAIN_ABSOLUTE_PATH, chain, {
+      id: eventId,
+      text: text,
+      parentEventId: START_EVENT_ID_DEPRECATED,
+      in: inn,
+      weight: weight,
+    });
+
+    expect(
+      chain.events[START_EVENT_ID_DEPRECATED].next,
+      'parent event.next should have been linked to new event',
+    ).toEqual([
+      {
+        event: eventId,
+        in: inn,
+        weight: weight,
+        effects: null,
+      },
+    ]);
+
+    expect(chain.events[eventId], 'event itself should have been created').toEqual({
+      text: text,
+      next: null,
+      effects: null,
+      choices: null,
+    });
+  });
+
   it('should not allow creating a choice on an event outcoming events', async () => {
     const chain = deepCopy(EMPTY_CHAIN);
 
@@ -345,6 +380,7 @@ describe('testing effect creation', () => {
 function deepCopy(variable: Chain) {
   return JSON.parse(JSON.stringify(variable));
 }
+
 async function given(description: string, f: () => Promise<void>) {
   await f();
 }

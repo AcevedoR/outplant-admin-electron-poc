@@ -81,6 +81,8 @@ export function createEvent(
   return linkEvent(chainFileAbsolutePath, chain, {
     parentId: {value: createEvent.parentEventId},
     event: {value: createEvent.id},
+    in: createEvent.in,
+    weight: createEvent.weight,
   });
 }
 
@@ -111,8 +113,8 @@ export function linkEvent(
     }
     parentEvent.next.push({
       event: linkEvent.event.value,
-      in: null,
-      weight: null,
+      in: linkEvent.in ? linkEvent.in : null,
+      weight: linkEvent.weight ? linkEvent.weight : null,
       effects: null,
     });
   }
