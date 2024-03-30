@@ -12,6 +12,8 @@
   import type {LinkEffect} from '/@/file-synchronization/LinkEffect';
   import type {Effect} from '/@/model/Effect';
   import {getAvailableEffects} from '/@/admin-view/utils';
+  import {faDiagramProject, faDollarSign, faTree, faUser} from '@fortawesome/free-solid-svg-icons';
+  import {Fa} from 'svelte-fa';
 
   export let selectedContentToEdit: ChoiceToDisplay;
   export let chainEffects: Record<string, Effect>;
@@ -96,10 +98,17 @@
       <TextEditor bind:textToEdit={selectedContentToEdit.text} on:textEdited={onSave}></TextEditor>
     </div>
     <hr>
+    <Fa icon={faDiagramProject} size="2x"></Fa>
     <div id="choice-creation-section">
       <Button on:click={() => currentCreationFormDisplayed = CreationFormDisplayed.createEvent}>
         Create a new event/choice outcome
       </Button>
+    </div>
+    <hr>
+    <div>
+      <Fa icon={faUser} size="2x"></Fa>
+      <Fa icon={faTree} size="2x"></Fa>
+      <Fa icon={faDollarSign} size="2x"></Fa>
     </div>
     <div id="choice-effect-creation-section">
       <Button on:click={() => currentCreationFormDisplayed = CreationFormDisplayed.createEffect}>

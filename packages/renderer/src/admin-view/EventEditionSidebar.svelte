@@ -16,6 +16,8 @@
   import type {LinkEvent} from '/@/file-synchronization/LinkEvent';
   import LinkEventForm from '/@/admin-view/LinkEventForm.svelte';
   import {getAvailableEffects, getAvailableEvents} from '/@/admin-view/utils';
+  import {faDiagramProject, faDollarSign, faTree, faUser} from '@fortawesome/free-solid-svg-icons';
+  import {Fa} from 'svelte-fa';
 
   export let selectedContentToEdit: EventToDisplay;
   export let chainEffects: Record<string, Effect>;
@@ -107,7 +109,6 @@
 <div id="event-edition-sidebar">
 
   <h1>Admin sidebar</h1>
-
   {#if currentCreationFormDisplayed === CreationFormDisplayed.createEvent }
     <EventCreationForm
       parentEventId={selectedContentToEdit.id}
@@ -143,6 +144,7 @@
       <TextEditor bind:textToEdit={selectedContentToEdit.text} on:textEdited={onEventEdited}></TextEditor>
     </div>
     <hr>
+    <Fa icon={faDiagramProject} size="2x"></Fa>
     {#if eventOutcomeType === EventOutcomeType.EVENTS || eventOutcomeType === EventOutcomeType.NONE}
       <div id="event-creation-section">
         <Button on:click={() => currentCreationFormDisplayed =  CreationFormDisplayed.createEvent}>
@@ -162,6 +164,12 @@
         </Button>
       </div>
     {/if}
+    <hr>
+    <div>
+      <Fa icon={faUser} size="2x"></Fa>
+      <Fa icon={faTree} size="2x"></Fa>
+      <Fa icon={faDollarSign} size="2x"></Fa>
+    </div>
     <div id="choice-effect-creation-section">
       <Button on:click={() => currentCreationFormDisplayed =  CreationFormDisplayed.createEffect}>
         Create a new effect
