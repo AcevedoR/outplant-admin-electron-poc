@@ -23,8 +23,11 @@ you probably want to pull the game repository and set the following **environmen
   - ~create a choice~
   - ~create event from choice~
   - link another choice from event
-  - link another event from event
+  - ~link another event from event~
   - ~create an effect from event~
   - ~create an effect from a choice~
   - ~link an effect to event~
   - ~link an effect to choice~
+  - remove effect
+  - edit effect
+  - edit 'in' and 'weight'
