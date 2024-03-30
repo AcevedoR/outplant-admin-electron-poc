@@ -90,7 +90,7 @@
         <EventEditionSidebar selectedContentToEdit={selectedContentToEdit} chainEffects={chain.chain.effects}
                              on:save={e => modifyChain(chain.chainFileAbsolutePath, chain.chain, e)} />
       {:else}
-        <ChoiceEditionSidebar selectedContentToEdit={selectedContentToEdit}
+        <ChoiceEditionSidebar selectedContentToEdit={selectedContentToEdit} chainEffects={chain.chain.effects}
                               on:save={e => modifyChain(chain.chainFileAbsolutePath, chain.chain, e)} />
       {/if}
     {/if}

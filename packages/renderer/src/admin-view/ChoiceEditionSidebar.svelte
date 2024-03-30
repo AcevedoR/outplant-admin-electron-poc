@@ -8,12 +8,24 @@
   import EffectCreationForm from '/@/admin-view/EffectCreationForm.svelte';
   import type {CreateEffect} from '/@/file-synchronization/CreateEffect';
   import Button from '/@/admin-view/Button.svelte';
+  import LinkEffectForm from '/@/admin-view/LinkEffectForm.svelte';
+  import type {LinkEffect} from '/@/file-synchronization/LinkEffect';
+  import type {Effect} from '/@/model/Effect';
 
   export let selectedContentToEdit: ChoiceToDisplay;
+  export let chainEffects: Record<string, Effect>;
+  $: availableEffects = getAvailableEffects(chainEffects);
 
+  const getAvailableEffects = (chainEffects: Record<string, Effect>): Record<string, Effect> => {
+    let res: Record<string, Effect> = {};
+    Object.entries(chainEffects)
+      .filter(([name, effect]) => !selectedContentToEdit.effects.find(x => x.id === name))
+      .forEach(([name, effect]) => res[name] = effect);
+    return res;
+  };
 
   enum CreationFormDisplayed {
-    none, createEvent, createEffect
+    none, createEvent, createEffect, linkEffect
   }
 
   let currentCreationFormDisplayed = CreationFormDisplayed.none;
@@ -52,7 +64,16 @@
     currentCreationFormDisplayed = CreationFormDisplayed.none;
   };
 
+  const onEffectLink = (linkEffect: LinkEffect) => {
+    console.log('linking effect: ' + linkEffect.effectName);
+    dispatch('save', {
+      type: 'linkEffect',
+      content: linkEffect,
+    });
+    currentCreationFormDisplayed = CreationFormDisplayed.none;
+  };
 </script>
+
 <div id="choice-edition-sidebar">
 
   <h1>Admin sidebar</h1>
@@ -67,6 +88,12 @@
       parentId={selectedContentToEdit.id}
       on:createEffect={(msg) => onEffectCreation(msg.detail)}
     ></EffectCreationForm>
+  {:else if currentCreationFormDisplayed === CreationFormDisplayed.linkEffect}
+    <LinkEffectForm
+      parentId={selectedContentToEdit.id}
+      effects={availableEffects}
+      on:linkEffect={(msg) => onEffectLink(msg.detail)}
+    ></LinkEffectForm>
   {:else if currentCreationFormDisplayed === CreationFormDisplayed.none}
     <div id="selected-content-display">
       <h2>Modifying choice: </h2>
@@ -82,6 +109,11 @@
     <div id="choice-effect-creation-section">
       <Button on:click={() => currentCreationFormDisplayed = CreationFormDisplayed.createEffect}>
         Create a new effect
+      </Button>
+    </div>
+    <div id="choice-effect-link-section">
+      <Button on:click={() => currentCreationFormDisplayed = CreationFormDisplayed.linkEffect}>
+        Link an existing effect
       </Button>
     </div>
   {/if}
