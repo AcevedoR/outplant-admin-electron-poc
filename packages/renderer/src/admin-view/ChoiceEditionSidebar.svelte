@@ -43,6 +43,8 @@
         parentId: selectedContentToEdit.id,
         text: createEvent.text,
         id: createEvent.id,
+        in:createEvent.in,
+        weight:createEvent.weight
       } as CreateChoiceOutcome,
     });
     currentCreationFormDisplayed = CreationFormDisplayed.none;

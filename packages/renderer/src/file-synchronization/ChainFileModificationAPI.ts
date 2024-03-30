@@ -174,8 +174,8 @@ export function createChoiceOutcome(
   choice.next.push({
     event: createChoiceOutcome.id,
     effects: null,
-    weight: null,
-    in: null,
+    weight: createChoiceOutcome.weight ? createChoiceOutcome.weight : null,
+    in: createChoiceOutcome.in ? createChoiceOutcome.in : null,
   });
 
   chain.events[createChoiceOutcome.id] = {
