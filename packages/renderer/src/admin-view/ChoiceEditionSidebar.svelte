@@ -76,12 +76,12 @@
     <hr>
     <div id="choice-creation-section">
       <Button on:click={() => currentCreationFormDisplayed = CreationFormDisplayed.createEvent}>
-        Link a new event/choice outcome
+        Create a new event/choice outcome
       </Button>
     </div>
     <div id="choice-effect-creation-section">
       <Button on:click={() => currentCreationFormDisplayed = CreationFormDisplayed.createEffect}>
-        Link a new effect
+        Create a new effect
       </Button>
     </div>
   {/if}
@@ -106,7 +106,8 @@
     background-color: rgba(213, 193, 145, 0.65);
     padding: 20px;
   }
-  :global(hr){
+
+  :global(hr) {
     border: 10px solid #232223;
   }
 </style>

@@ -9,11 +9,24 @@
   import EffectCreationForm from '/@/admin-view/EffectCreationForm.svelte';
   import type {CreateEffect} from '/@/file-synchronization/CreateEffect';
   import Button from '/@/admin-view/Button.svelte';
+  import type {Effect} from '/@/model/Effect';
+  import LinkEffectForm from '/@/admin-view/LinkEffectForm.svelte';
+  import type {LinkEffect} from '/@/file-synchronization/LinkEffect';
 
   export let selectedContentToEdit: EventToDisplay;
+  export let chainEffects: Record<string, Effect>;
+  $: availableEffects = getAvailableEffects(chainEffects);
+
+  const getAvailableEffects = (chainEffects: Record<string, Effect>): Record<string, Effect> => {
+    let res: Record<string, Effect> = {};
+    Object.entries(chainEffects)
+      .filter(([name, effect]) => !selectedContentToEdit.effects.find(x => x.id === name))
+      .forEach(([name, effect]) => res[name] = effect);
+    return res;
+  };
 
   enum CreationFormDisplayed {
-    none, createEvent, createChoice, createEffect
+    none, createEvent, createChoice, createEffect, linkEffect
   }
 
   let currentCreationFormDisplayed: CreationFormDisplayed = CreationFormDisplayed.none;
@@ -74,6 +87,15 @@
     currentCreationFormDisplayed = CreationFormDisplayed.none;
   };
 
+  const onLinkEffect = (linkEffect: LinkEffect) => {
+    console.log('linking effect');
+    dispatch('save', {
+      type: 'linkEffect',
+      content: linkEffect,
+    });
+    currentCreationFormDisplayed = CreationFormDisplayed.none;
+  };
+
 </script>
 <div id="event-edition-sidebar">
 
@@ -94,6 +116,12 @@
       parentId={{value: selectedContentToEdit.id}}
       on:createEffect={(createEffect) => onEffectCreation(createEffect.detail)}
     ></EffectCreationForm>
+  {:else if currentCreationFormDisplayed === CreationFormDisplayed.linkEffect}
+    <LinkEffectForm
+      parentId={{value: selectedContentToEdit.id}}
+      effects={availableEffects}
+      on:linkEffect={(linkEffect) => onLinkEffect(linkEffect.detail)}
+    ></LinkEffectForm>
   {:else if currentCreationFormDisplayed === CreationFormDisplayed.none}
 
     <div id="selected-content-display">
@@ -104,18 +132,26 @@
     <hr>
     {#if eventOutcomeType === EventOutcomeType.EVENTS || eventOutcomeType === EventOutcomeType.NONE}
       <div id="event-creation-section">
-        <Button on:click={() => currentCreationFormDisplayed =  CreationFormDisplayed.createEvent}>Link a new event
+        <Button on:click={() => currentCreationFormDisplayed =  CreationFormDisplayed.createEvent}>
+          Create a new event
         </Button>
       </div>
     {/if}
     {#if eventOutcomeType === EventOutcomeType.CHOICES || eventOutcomeType === EventOutcomeType.NONE}
       <div id="choice-creation-section">
-        <Button on:click={() =>  currentCreationFormDisplayed =  CreationFormDisplayed.createChoice}>Link a new choice
+        <Button on:click={() =>  currentCreationFormDisplayed =  CreationFormDisplayed.createChoice}>
+          Create a new choice
         </Button>
       </div>
     {/if}
     <div id="choice-effect-creation-section">
-      <Button on:click={() => currentCreationFormDisplayed =  CreationFormDisplayed.createEffect}>Link a new effect
+      <Button on:click={() => currentCreationFormDisplayed =  CreationFormDisplayed.createEffect}>
+        Create a new effect
+      </Button>
+    </div>
+    <div id="choice-effect-link-section">
+      <Button on:click={() => currentCreationFormDisplayed =  CreationFormDisplayed.linkEffect}>
+        Link an effect
       </Button>
     </div>
   {/if}
@@ -130,7 +166,8 @@
     background-color: #5e548e;
     /*#e0b1cb     #3c365a*/
   }
-  :global(hr){
+
+  :global(hr) {
     border: 10px solid #232223;
   }
 </style>

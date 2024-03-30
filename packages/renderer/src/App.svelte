@@ -11,6 +11,7 @@
     createEvent,
     editChoice,
     editEvent,
+    linkEffect,
   } from '/@/file-synchronization/ChainFileModificationAPI';
   import type {EventToDisplay} from '/@/model/todisplay/EventToDisplay';
   import {isEventToDisplay} from '/@/model/todisplay/EventToDisplay.js';
@@ -20,6 +21,7 @@
   import type {CreateChoice} from '/@/file-synchronization/CreateChoice';
   import type {CreateChoiceOutcome} from '/@/file-synchronization/CreateChoiceOutcome';
   import type {CreateEffect} from '/@/file-synchronization/CreateEffect';
+  import type {LinkEffect} from '/@/file-synchronization/LinkEffect';
 
   let selectedContentToEdit: ChoiceToDisplay | EventToDisplay | undefined;
 
@@ -50,6 +52,9 @@
         break;
       case 'createEffect':
         createEffect(chainFileAbsolutePath, chain, modificationEvent.detail.content as CreateEffect).then(v => onChainSelectionChange(chainFileAbsolutePath));
+        break;
+      case 'linkEffect':
+        linkEffect(chainFileAbsolutePath, chain, modificationEvent.detail.content as LinkEffect).then(v => onChainSelectionChange(chainFileAbsolutePath));
         break;
       default:
         throw Error('unhandled modification event: ' + modificationEvent.detail.type);
@@ -82,7 +87,7 @@
     <ChainFlowViewer chain={chain.chain} selectedContent={selectedContentToEdit} on:change={changeSelectedContent} />
     {#if selectedContentToEdit !== undefined}
       {#if isEventToDisplay(selectedContentToEdit) }
-        <EventEditionSidebar selectedContentToEdit={selectedContentToEdit}
+        <EventEditionSidebar selectedContentToEdit={selectedContentToEdit} chainEffects={chain.chain.effects}
                              on:save={e => modifyChain(chain.chainFileAbsolutePath, chain.chain, e)} />
       {:else}
         <ChoiceEditionSidebar selectedContentToEdit={selectedContentToEdit}
