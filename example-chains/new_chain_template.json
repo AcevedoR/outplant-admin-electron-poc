@@ -1,0 +1,16 @@
+{
+  "$schema": "./schema.json",
+  "title": "my new chain",
+  "cooldown": 999,
+  "trigger": {
+    "target": "population",
+    "comparator": "gte",
+    "value": 3
+  },
+  "events": {
+    "start": {
+      "text": "Enter your first event text here"
+    }
+  },
+  "effects": {}
+}

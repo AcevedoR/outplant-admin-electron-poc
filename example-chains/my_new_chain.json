@@ -1,0 +1,246 @@
+{
+  "$schema": "./schema.json",
+  "title": "my new chain",
+  "cooldown": 999,
+  "trigger": {
+    "target": "population",
+    "comparator": "gte",
+    "value": 3
+  },
+  "events": {
+    "555": {
+      "text": "put your event text here",
+      "choices": [
+        {
+          "text": "put your choice text here",
+          "next": [
+            {
+              "event": "ffffffff"
+            }
+          ]
+        },
+        {
+          "text": "put your choice text here",
+          "next": []
+        }
+      ]
+    },
+    "4444": {
+      "text": "put your event text here",
+      "next": [
+        {
+          "event": "555"
+        }
+      ]
+    },
+    "start": {
+      "text": "Enter your first event text here",
+      "next": [
+        {
+          "event": "event2"
+        },
+        {
+          "event": "event3"
+        },
+        {
+          "event": "sddfs"
+        }
+      ]
+    },
+    "event2": {
+      "text": "put your event text here",
+      "next": [
+        {
+          "event": "4444"
+        }
+      ],
+      "effects": {
+        "44444": "true",
+        "rezrezr": "true",
+        "effg": "true",
+        "effect1": true,
+        "effect4": true,
+        "ezfzefze": true,
+        "dddddd": true,
+        "d": true,
+        "rrr": true
+      }
+    },
+    "event3": {
+      "text": "put your event text here",
+      "choices": [
+        {
+          "text": "put your choice text here oooo",
+          "next": [
+            {
+              "event": "my-eventoiut"
+            },
+            {
+              "event": "mmmmmm"
+            },
+            {
+              "event": "ddd"
+            }
+          ]
+        },
+        {
+          "text": "put your choice text here",
+          "next": [
+            {
+              "event": "fvffffff"
+            }
+          ],
+          "effects": {
+            "d": true
+          }
+        },
+        {
+          "text": "put your choice text here",
+          "next": [
+            {
+              "event": "dddd"
+            }
+          ]
+        }
+      ]
+    },
+    "my-eventoiut": {
+      "text": "put your event text here"
+    },
+    "mmmmmm": {
+      "text": "put your event text here"
+    },
+    "fvffffff": {
+      "text": "put your event text here",
+      "choices": [
+        {
+          "text": "put your choice text here",
+          "next": []
+        },
+        {
+          "text": "put your choice text here",
+          "next": [
+            {
+              "event": "ddsfsdfsd"
+            },
+            {
+              "event": "dsffdsfsd"
+            }
+          ]
+        }
+      ]
+    },
+    "ddsfsdfsd": {
+      "text": "put your event text here",
+      "choices": [
+        {
+          "text": "put your choice text here",
+          "next": []
+        }
+      ]
+    },
+    "dsffdsfsd": {
+      "text": "put your event text here",
+      "choices": [
+        {
+          "text": "put your choice text here",
+          "next": []
+        }
+      ]
+    },
+    "ffffffff": {
+      "text": "put your event text here",
+      "choices": [
+        {
+          "text": "put your choice text here",
+          "next": []
+        }
+      ]
+    },
+    "sddfs": {
+      "text": "put your event text here",
+      "choices": [
+        {
+          "text": "put your choice text here",
+          "next": [],
+          "effects": {
+            "effect1": "true",
+            "effect4": "false",
+            "ezfzefze": "false"
+          }
+        }
+      ],
+      "effects": {
+        "rrr": true
+      }
+    },
+    "ddd": {
+      "text": "put your event text here"
+    },
+    "dddd": {
+      "text": "put your event text here",
+      "effects": {
+        "dddddd": false
+      }
+    }
+  },
+  "effects": {
+    "44444": {
+      "operation": "add",
+      "value": 4,
+      "type": "instant",
+      "target": "population",
+      "description": ""
+    },
+    "rezrezr": {
+      "operation": "add",
+      "value": 2,
+      "type": "instant",
+      "target": "population",
+      "description": ""
+    },
+    "effg": {
+      "operation": "substract",
+      "value": 5,
+      "type": "instant",
+      "target": "money",
+      "description": ""
+    },
+    "effect1": {
+      "operation": "add",
+      "value": 4,
+      "type": "instant",
+      "target": "population"
+    },
+    "effect4": {
+      "operation": "substract",
+      "value": 2,
+      "type": "permanent",
+      "target": "ecology"
+    },
+    "ezfzefze": {
+      "operation": "add",
+      "value": 2,
+      "type": "instant",
+      "target": "population"
+    },
+    "dddddd": {
+      "operation": "add",
+      "value": 22,
+      "type": "instant",
+      "target": "population"
+    },
+    "d": {
+      "operation": "add",
+      "value": 3,
+      "type": "instant",
+      "target": "population"
+    },
+    "rrr": {
+      "operation": "add",
+      "value": 3,
+      "type": "instant",
+      "target": "population"
+    }
+  }
+}

@@ -94,7 +94,11 @@ if (import.meta.env.PROD) {
 }
 
 function getCurrentChainsDirectory(): string {
-  return '/Users/ROMAN/Documents/git-repos/unnamed-game/chains'; // TODO make this an env var, or CLI argument
+  let res = process.env.CHAINS_DIRECTORY_ABSOLUTE_PATH;
+  if (!res) {
+    res = './example-chains';
+  }
+  return res;
 }
 
 async function getChainsFilenames(
