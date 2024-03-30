@@ -10,6 +10,7 @@ import type {CreateChoiceOutcome} from '/@/file-synchronization/CreateChoiceOutc
 import type {CreateEffect} from '/@/file-synchronization/CreateEffect';
 import type {EventId} from '/@/model/todisplay/EventId';
 import type {LinkEffect} from '/@/file-synchronization/LinkEffect';
+import type {LinkEvent} from '/@/file-synchronization/LinkEvent';
 
 export function editChoice(
   chainFileAbsolutePath: string,
@@ -77,36 +78,44 @@ export function createEvent(
     effects: null,
   };
 
-  return linkEvent(chainFileAbsolutePath, chain, createEvent.parentEventId, createEvent.id);
+  return linkEvent(chainFileAbsolutePath, chain, {
+    parentId: {value: createEvent.parentEventId},
+    event: {value: createEvent.id},
+  });
 }
 
 export function linkEvent(
   chainFileAbsolutePath: string,
   chain: Chain,
-  parentEventId: string,
-  eventId: string,
+  linkEvent: LinkEvent,
 ): Promise<void> {
-  const event = chain.events[eventId];
-  if (!event) {
-    throw new Error('event should exist');
-  }
-  const parentEvent = chain.events[parentEventId];
-  if (!parentEvent) {
-    throw new Error('parent event should exist');
-  }
-  if (getEventOutcomeType(parentEvent) === EventOutcomeType.CHOICES) {
-    throw new Error('cannot link an event on an event outcoming choices');
-  }
+  if (isChoiceToDisplayId(linkEvent.parentId)) {
+    throw new Error('unimplemented');
+  } else {
+    const parentEventId = (linkEvent.parentId as EventId).value;
 
-  if (!parentEvent.next) {
-    parentEvent.next = [];
+    const event = chain.events[linkEvent.event.value];
+    if (!event) {
+      throw new Error('event should exist');
+    }
+    const parentEvent = chain.events[parentEventId];
+    if (!parentEvent) {
+      throw new Error('parent event should exist');
+    }
+    if (getEventOutcomeType(parentEvent) === EventOutcomeType.CHOICES) {
+      throw new Error('cannot link an event on an event outcoming choices');
+    }
+
+    if (!parentEvent.next) {
+      parentEvent.next = [];
+    }
+    parentEvent.next.push({
+      event: linkEvent.event.value,
+      in: null,
+      weight: null,
+      effects: null,
+    });
   }
-  parentEvent.next.push({
-    event: eventId,
-    in: null,
-    weight: null,
-    effects: null,
-  });
 
   return requestUpdateChainFile(chainFileAbsolutePath, chain);
 }

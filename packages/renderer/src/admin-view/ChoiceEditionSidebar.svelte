@@ -11,18 +11,11 @@
   import LinkEffectForm from '/@/admin-view/LinkEffectForm.svelte';
   import type {LinkEffect} from '/@/file-synchronization/LinkEffect';
   import type {Effect} from '/@/model/Effect';
+  import {getAvailableEffects} from '/@/admin-view/utils';
 
   export let selectedContentToEdit: ChoiceToDisplay;
   export let chainEffects: Record<string, Effect>;
-  $: availableEffects = getAvailableEffects(chainEffects);
-
-  const getAvailableEffects = (chainEffects: Record<string, Effect>): Record<string, Effect> => {
-    let res: Record<string, Effect> = {};
-    Object.entries(chainEffects)
-      .filter(([name, effect]) => !selectedContentToEdit.effects.find(x => x.id === name))
-      .forEach(([name, effect]) => res[name] = effect);
-    return res;
-  };
+  $: availableEffects = getAvailableEffects(chainEffects, selectedContentToEdit.effects);
 
   enum CreationFormDisplayed {
     none, createEvent, createEffect, linkEffect

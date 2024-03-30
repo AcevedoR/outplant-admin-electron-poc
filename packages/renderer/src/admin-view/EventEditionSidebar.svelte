@@ -10,23 +10,21 @@
   import type {CreateEffect} from '/@/file-synchronization/CreateEffect';
   import Button from '/@/admin-view/Button.svelte';
   import type {Effect} from '/@/model/Effect';
+  import type {Event} from '/@/model/Event';
   import LinkEffectForm from '/@/admin-view/LinkEffectForm.svelte';
   import type {LinkEffect} from '/@/file-synchronization/LinkEffect';
+  import type {LinkEvent} from '/@/file-synchronization/LinkEvent';
+  import LinkEventForm from '/@/admin-view/LinkEventForm.svelte';
+  import {getAvailableEffects, getAvailableEvents} from '/@/admin-view/utils';
 
   export let selectedContentToEdit: EventToDisplay;
   export let chainEffects: Record<string, Effect>;
-  $: availableEffects = getAvailableEffects(chainEffects);
-
-  const getAvailableEffects = (chainEffects: Record<string, Effect>): Record<string, Effect> => {
-    let res: Record<string, Effect> = {};
-    Object.entries(chainEffects)
-      .filter(([name, effect]) => !selectedContentToEdit.effects.find(x => x.id === name))
-      .forEach(([name, effect]) => res[name] = effect);
-    return res;
-  };
+  export let chainEvents: Record<string, Event>;
+  $: availableEffects = getAvailableEffects(chainEffects, selectedContentToEdit.effects);
+  $: availableEvents = getAvailableEvents(chainEvents, selectedContentToEdit.next);
 
   enum CreationFormDisplayed {
-    none, createEvent, createChoice, createEffect, linkEffect
+    none, createEvent, createChoice, linkEvent, createEffect, linkEffect
   }
 
   let currentCreationFormDisplayed: CreationFormDisplayed = CreationFormDisplayed.none;
@@ -69,6 +67,15 @@
     currentCreationFormDisplayed = CreationFormDisplayed.none;
   };
 
+  const onLinkEvent = (linkEvent: LinkEvent) => {
+    console.log('linking event');
+    dispatch('save', {
+      type: 'linkEvent',
+      content: linkEvent,
+    });
+    currentCreationFormDisplayed = CreationFormDisplayed.none;
+  };
+
   const onChoiceCreation = (createChoice: CreateChoice) => {
     console.log('creating choice');
     dispatch('save', {
@@ -104,23 +111,29 @@
   {#if currentCreationFormDisplayed === CreationFormDisplayed.createEvent }
     <EventCreationForm
       parentEventId={selectedContentToEdit.id}
-      on:createEvent={(createEvent) => onEventCreation(createEvent.detail)}
+      on:createEvent={(msg) => onEventCreation(msg.detail)}
     ></EventCreationForm>
+  {:else if currentCreationFormDisplayed === CreationFormDisplayed.linkEvent }
+    <LinkEventForm
+      parentId={{value: selectedContentToEdit.id}}
+      events={availableEvents}
+      on:linkEvent={(msg) => onLinkEvent(msg.detail)}
+    ></LinkEventForm>
   {:else if currentCreationFormDisplayed === CreationFormDisplayed.createChoice }
     <ChoiceCreationForm
       parentEventId={selectedContentToEdit.id}
-      on:createChoice={(createChoice) => onChoiceCreation(createChoice.detail)}
+      on:createChoice={(msg) => onChoiceCreation(msg.detail)}
     ></ChoiceCreationForm>
   {:else if currentCreationFormDisplayed === CreationFormDisplayed.createEffect}
     <EffectCreationForm
       parentId={{value: selectedContentToEdit.id}}
-      on:createEffect={(createEffect) => onEffectCreation(createEffect.detail)}
+      on:createEffect={(msg) => onEffectCreation(msg.detail)}
     ></EffectCreationForm>
   {:else if currentCreationFormDisplayed === CreationFormDisplayed.linkEffect}
     <LinkEffectForm
       parentId={{value: selectedContentToEdit.id}}
       effects={availableEffects}
-      on:linkEffect={(linkEffect) => onLinkEffect(linkEffect.detail)}
+      on:linkEffect={(msg) => onLinkEffect(msg.detail)}
     ></LinkEffectForm>
   {:else if currentCreationFormDisplayed === CreationFormDisplayed.none}
 
@@ -134,6 +147,11 @@
       <div id="event-creation-section">
         <Button on:click={() => currentCreationFormDisplayed =  CreationFormDisplayed.createEvent}>
           Create a new event
+        </Button>
+      </div>
+      <div id="link-event-section">
+        <Button on:click={() => currentCreationFormDisplayed =  CreationFormDisplayed.linkEvent}>
+          Link an existing event
         </Button>
       </div>
     {/if}

@@ -124,19 +124,20 @@ describe('testing modification of an Event of a Chain', () => {
   it('should not allow linking an un-existing event', async () => {
     const chain = deepCopy(EMPTY_CHAIN);
     expect(() =>
-      linkEvent(CHAIN_ABSOLUTE_PATH, chain, START_EVENT_ID_DEPRECATED, 'unexisting-event-id'),
+      linkEvent(CHAIN_ABSOLUTE_PATH, chain, {
+        parentId: START_EVENT_ID,
+        event: {value: 'unexisting-event-id'},
+      }),
     ).toThrowError('event should exist');
   });
 
   it('should not allow linking to an un-existing parent event', async () => {
     const chain = deepCopy(EMPTY_CHAIN);
     expect(() =>
-      linkEvent(
-        CHAIN_ABSOLUTE_PATH,
-        chain,
-        'unexisting-parent-event-id',
-        START_EVENT_ID_DEPRECATED,
-      ),
+      linkEvent(CHAIN_ABSOLUTE_PATH, chain, {
+        parentId: {value: 'unexisting-parent-event-id'},
+        event: START_EVENT_ID,
+      }),
     ).toThrowError('parent event should exist');
   });
 
@@ -166,7 +167,10 @@ describe('testing modification of an Event of a Chain', () => {
     });
 
     expect(() =>
-      linkEvent(CHAIN_ABSOLUTE_PATH, chain, secondEventWithChoice, firstEvent),
+      linkEvent(CHAIN_ABSOLUTE_PATH, chain, {
+        parentId: {value: secondEventWithChoice},
+        event: {value: firstEvent},
+      }),
     ).toThrowError('cannot link an event on an event outcoming choices');
   });
 });

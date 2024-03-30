@@ -60,8 +60,8 @@
   };
 
 </script>
-<div id="event-creation-form">
-  <h2>Create a new effect from parent: </h2>
+<div id="link-effect-form">
+  <h2>Link an effect to parent: </h2>
   {#if isChoiceToDisplayId(parentId)}
     <h3>choice: {parentId.get()}</h3>
   {:else}
@@ -87,7 +87,7 @@
   </form>
 </div>
 <style>
-  #event-creation-form button {
+  #link-effect-form {
     text-align: center;
   }
 </style>
