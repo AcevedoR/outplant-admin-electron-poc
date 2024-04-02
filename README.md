@@ -17,13 +17,14 @@ generated from https://github.com/cawa-93/vite-electron-builder
 if you are writing a Chain/story for our [Outplant \(in development\) game](https://github.com/AcevedoR/outplant), 
 you probably want to pull the game repository and set the following **environment variable** to your desired location: `CHAINS_DIRECTORY_ABSOLUTE_PATH=/my-git-repos/Outplant/chains`
 
-## TODO
-- write mode
+## TODO/Features
+- edit a chain
   - ~create event~
   - ~create a choice~
   - ~create event from choice~
-  - link another choice from event
+  - ~link another choice from event~ < I'm not sure if it is useful/we should allow that
   - ~link another event from event~
+  - ~link another event from choice~
   - ~create an effect from event~
   - ~create an effect from a choice~
   - ~link an effect to event~

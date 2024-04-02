@@ -309,6 +309,38 @@ describe('testing modification of a Choice of a Chain', () => {
       choices: null,
     });
   });
+
+  it('should link an existing event to a choice', async () => {
+    const chain = deepCopy(EMPTY_CHAIN);
+    await given('given the start_event has one choice', async () => {
+      await createChoice(CHAIN_ABSOLUTE_PATH, chain, {
+        text: someText,
+        parentEventId: START_EVENT_ID.value,
+      });
+    });
+    const choiceId = new ChoiceToDisplayId(START_EVENT_ID.value, 0);
+    const weight = 1;
+    const inn = 2;
+
+    await linkEvent(CHAIN_ABSOLUTE_PATH, chain, {
+      event: START_EVENT_ID,
+      parentId: choiceId,
+      weight: weight,
+      in: inn,
+    });
+
+    expect(
+      chain.events[START_EVENT_ID.value].choices[choiceId.choiceIndex].next,
+      'choice should have been linked back to start event',
+    ).toEqual([
+      {
+        event: START_EVENT_ID.value,
+        in: inn,
+        weight: weight,
+        effects: null,
+      },
+    ]);
+  });
 });
 
 describe('testing effect creation', () => {

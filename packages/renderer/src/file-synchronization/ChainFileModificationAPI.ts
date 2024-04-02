@@ -92,7 +92,25 @@ export function linkEvent(
   linkEvent: LinkEvent,
 ): Promise<void> {
   if (isChoiceToDisplayId(linkEvent.parentId)) {
-    throw new Error('unimplemented');
+    const choiceId: ChoiceToDisplayId = linkEvent.parentId as ChoiceToDisplayId;
+    const parentChoiceParentEvent = chain.events[choiceId.parentId];
+    if (!parentChoiceParentEvent) {
+      throw new Error('parent event of parent choice should exist');
+    }
+    if (!parentChoiceParentEvent.choices) {
+      parentChoiceParentEvent.choices = [];
+    }
+    const parentChoice = parentChoiceParentEvent.choices[choiceId.choiceIndex];
+    if (!parentChoice) {
+      throw new Error('parent choice should exist');
+    }
+
+    parentChoice.next.push({
+      event: linkEvent.event.value,
+      in: linkEvent.in ? linkEvent.in : null,
+      weight: linkEvent.weight ? linkEvent.weight : null,
+      effects: null,
+    });
   } else {
     const parentEventId = (linkEvent.parentId as EventId).value;
 

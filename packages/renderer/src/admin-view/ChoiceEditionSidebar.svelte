@@ -11,16 +11,21 @@
   import LinkEffectForm from '/@/admin-view/LinkEffectForm.svelte';
   import type {LinkEffect} from '/@/file-synchronization/LinkEffect';
   import type {Effect} from '/@/model/Effect';
-  import {getAvailableEffects} from '/@/admin-view/utils';
+  import {getAvailableEffects, getAvailableEvents} from '/@/admin-view/utils';
   import {faDiagramProject, faDollarSign, faTree, faUser} from '@fortawesome/free-solid-svg-icons';
   import {Fa} from 'svelte-fa';
+  import LinkEventForm from '/@/admin-view/LinkEventForm.svelte';
+  import type {LinkEvent} from '/@/file-synchronization/LinkEvent';
+  import type {Event} from '/@/model/Event';
 
   export let selectedContentToEdit: ChoiceToDisplay;
   export let chainEffects: Record<string, Effect>;
+  export let chainEvents: Record<string, Event>;
   $: availableEffects = getAvailableEffects(chainEffects, selectedContentToEdit.effects);
+  $: availableEvents = getAvailableEvents(chainEvents, selectedContentToEdit.next);
 
   enum CreationFormDisplayed {
-    none, createEvent, createEffect, linkEffect
+    none, createEvent, linkEvent, createEffect, linkEffect
   }
 
   let currentCreationFormDisplayed = CreationFormDisplayed.none;
@@ -45,9 +50,18 @@
         parentId: selectedContentToEdit.id,
         text: createEvent.text,
         id: createEvent.id,
-        in:createEvent.in,
-        weight:createEvent.weight
+        in: createEvent.in,
+        weight: createEvent.weight,
       } as CreateChoiceOutcome,
+    });
+    currentCreationFormDisplayed = CreationFormDisplayed.none;
+  };
+
+  const onLinkEvent = (linkEvent: LinkEvent) => {
+    console.log('linking event');
+    dispatch('save', {
+      type: 'linkEvent',
+      content: linkEvent,
     });
     currentCreationFormDisplayed = CreationFormDisplayed.none;
   };
@@ -80,6 +94,12 @@
       parentEventId={selectedContentToEdit.id.get()}
       on:createEvent={(msg) => onEventCreation(msg.detail)}
     ></EventCreationForm>
+  {:else if currentCreationFormDisplayed === CreationFormDisplayed.linkEvent}
+    <LinkEventForm
+      parentId={selectedContentToEdit.id}
+      events={availableEvents}
+      on:linkEvent={(msg) => onLinkEvent(msg.detail)}
+    ></LinkEventForm>
   {:else if currentCreationFormDisplayed === CreationFormDisplayed.createEffect}
     <EffectCreationForm
       parentId={selectedContentToEdit.id}
@@ -102,6 +122,11 @@
     <div id="choice-creation-section">
       <Button on:click={() => currentCreationFormDisplayed = CreationFormDisplayed.createEvent}>
         Create a new event/choice outcome
+      </Button>
+    </div>
+    <div id="link-choice-to-event-section">
+      <Button on:click={() => currentCreationFormDisplayed = CreationFormDisplayed.linkEvent}>
+        Link an existing event/choice outcome
       </Button>
     </div>
     <hr>

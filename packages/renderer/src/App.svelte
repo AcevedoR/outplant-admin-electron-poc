@@ -11,7 +11,8 @@
     createEvent,
     editChoice,
     editEvent,
-    linkEffect, linkEvent,
+    linkEffect,
+    linkEvent,
   } from '/@/file-synchronization/ChainFileModificationAPI';
   import type {EventToDisplay} from '/@/model/todisplay/EventToDisplay';
   import {isEventToDisplay} from '/@/model/todisplay/EventToDisplay.js';
@@ -96,7 +97,9 @@
                              chainEvents={chain.chain.events}
                              on:save={e => modifyChain(chain.chainFileAbsolutePath, chain.chain, e)} />
       {:else}
-        <ChoiceEditionSidebar selectedContentToEdit={selectedContentToEdit} chainEffects={chain.chain.effects}
+        <ChoiceEditionSidebar selectedContentToEdit={selectedContentToEdit}
+                              chainEffects={chain.chain.effects}
+                              chainEvents={chain.chain.events}
                               on:save={e => modifyChain(chain.chainFileAbsolutePath, chain.chain, e)} />
       {/if}
     {/if}
