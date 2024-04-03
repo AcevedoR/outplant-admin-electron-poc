@@ -32,3 +32,8 @@ you probably want to pull the game repository and set the following **environmen
   - remove effect
   - edit effect
   - edit 'in' and 'weight'
+- quality of life
+  - help with dialogue “ special character
+  - switch back to another view after creating choice, you might edit the old one by mistake and lose your work....
+  - visually highlight selected node
+- possible bug: is substract effect operation type correctly spelled when creating an effect ?
