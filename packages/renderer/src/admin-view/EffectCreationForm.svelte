@@ -133,7 +133,7 @@
       bind:value={operation}
     >
       <option value="add">add</option>
-      <option value="substract">substract</option>
+      <option value="subtract">subtract</option>
     </Select>
     <Select
       label="target"

@@ -200,7 +200,7 @@
       "description": ""
     },
     "effg": {
-      "operation": "substract",
+      "operation": "subtract",
       "value": 5,
       "type": "instant",
       "target": "money",
@@ -213,7 +213,7 @@
       "target": "population"
     },
     "effect4": {
-      "operation": "substract",
+      "operation": "subtract",
       "value": 2,
       "type": "permanent",
       "target": "ecology"
