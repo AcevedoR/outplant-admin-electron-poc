@@ -2,6 +2,8 @@
   import {Handle, type NodeProps, Position} from '@xyflow/svelte';
   import OutplantEffects from './OutplantEffects.svelte';
   import type {EventToDisplay} from '/@/model/todisplay/EventToDisplay';
+  import {selectedContent} from '/@/chain-flow/svelte-flow-customizations/SelectedContentStore';
+  import {isChoiceToDisplayId} from '/@/model/todisplay/ChoiceToDisplay';
 
   type $$Props = NodeProps;
 
@@ -13,6 +15,16 @@
   if (!event) {
     throw new Error('an Event specific node should have the \'data.event\' property set');
   }
+
+  let eventDisplayBlock: HTMLElement | undefined = undefined;
+  $: {
+    if (eventDisplayBlock) {
+      if ($selectedContent && !isChoiceToDisplayId($selectedContent.id) && $selectedContent.id === event.id) {
+        eventDisplayBlock.classList.add('focused');
+      } else
+        eventDisplayBlock.classList.remove('focused');
+    }
+  }
 </script>
 
 <Handle type="target" position={Position.Left} style="background: #555;" {isConnectable} />
@@ -23,7 +35,7 @@
   isConnectable={isConnectable}
 />
 <div>
-  <div class="eventDisplayBlock">
+  <div class="eventDisplayBlock" bind:this={eventDisplayBlock}>
     <h4>{event.id}</h4>
     <p>
       {event.text.replace(/ #.*$/i, '')}
@@ -46,7 +58,7 @@
   }
 
   :global(.svelte-flow__node-outplantEventNode .eventDisplayBlock h4) {
-    margin: 0   0 5px 0;
+    margin: 0 0 5px 0;
     padding: 0;
   }
 
@@ -57,5 +69,9 @@
     max-width: 200px;
     margin: 0;
     padding: 0;
+  }
+
+  :global(.svelte-flow__node-outplantEventNode .eventDisplayBlock.focused) {
+    border: 10px solid #c300ff;
   }
 </style>

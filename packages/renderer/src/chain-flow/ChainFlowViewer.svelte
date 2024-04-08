@@ -11,10 +11,10 @@
     Position,
     SvelteFlow,
   } from '@xyflow/svelte';
-
+  import {generateFlowGraph} from './GenerateFlowGraph';
   // 👇 this is important! You need to import the styles for Svelte Flow to work
   import '@xyflow/svelte/dist/style.css';
-  import OutplantEventNode from './svelte-flow-customizations/nodes/OutplantEventNode.svelte'
+  import OutplantEventNode from './svelte-flow-customizations/nodes/OutplantEventNode.svelte';
   import OutplantCustomEdge from './svelte-flow-customizations/edges/OutplantCustomEdge.svelte';
   import type {Chain} from '../model/Chain';
   import type {ChoiceToDisplay} from '/@/model/todisplay/ChoiceToDisplay';
@@ -22,22 +22,21 @@
 
   // trying out autolayout
   import dagre from '@dagrejs/dagre';
-
-  import {generateFlowGraph} from './GenerateFlowGraph';
   import OutplantChoiceNode from './svelte-flow-customizations/nodes/OutplantChoiceNode.svelte';
 
 
   // START handle on click node
   import {createEventDispatcher} from 'svelte';
+  import {selectedContent} from '/@/chain-flow/svelte-flow-customizations/SelectedContentStore';
 
-  export let selectedContent;
   export let chain: Chain;
   const dispatch = createEventDispatcher();
 
-  function changeSelectedContent(selectedContent: ChoiceToDisplay | EventToDisplay | undefined) {
+  function changeSelectedContent(newSelectedContent: ChoiceToDisplay | EventToDisplay | undefined) {
+    selectedContent.set(newSelectedContent);
     // first argument is the event name
     // second is an object
-    dispatch('change', {selectedContent: selectedContent});
+    dispatch('change', {selectedContent: newSelectedContent});
   }
 
   // END handle on click node

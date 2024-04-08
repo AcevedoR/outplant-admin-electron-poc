@@ -9,7 +9,7 @@ interface FlowGraph {
   edges: Edge[];
 }
 
-interface Node {
+export interface Node {
   id: string;
   type: string;
   data: NodeEvent;

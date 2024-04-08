@@ -33,7 +33,7 @@ export class ChoiceToDisplayId {
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isChoiceToDisplayId(item: any): item is ChoiceToDisplayId {
-  return 'choiceIndex' in item;
+  return (item as ChoiceToDisplayId).choiceIndex !== undefined;
 }
 
 function convertToChoiceOutcomeToDisplay(
