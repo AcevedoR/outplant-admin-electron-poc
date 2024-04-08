@@ -44,22 +44,34 @@
         editEvent(chainFileAbsolutePath, chain, modificationEvent.detail.id, modificationEvent.detail.content as string).then(v => onChainSelectionChange(chainFileAbsolutePath));
         break;
       case 'createEvent':
-        createEvent(chainFileAbsolutePath, chain, modificationEvent.detail.content as CreateEvent).then(v => onChainSelectionChange(chainFileAbsolutePath));
+        createEvent(chainFileAbsolutePath, chain, modificationEvent.detail.content as CreateEvent)
+          .then(v => changeSelectedContent({detail: {selectedContent: undefined}}))
+          .then(v => onChainSelectionChange(chainFileAbsolutePath));
         break;
       case 'createChoice':
-        createChoice(chainFileAbsolutePath, chain, modificationEvent.detail.content as CreateChoice).then(v => onChainSelectionChange(chainFileAbsolutePath));
+        createChoice(chainFileAbsolutePath, chain, modificationEvent.detail.content as CreateChoice)
+          .then(v => changeSelectedContent({detail: {selectedContent: undefined}}))
+          .then(v => onChainSelectionChange(chainFileAbsolutePath));
         break;
       case 'createChoiceOutcome':
-        createChoiceOutcome(chainFileAbsolutePath, chain, modificationEvent.detail.content as CreateChoiceOutcome).then(v => onChainSelectionChange(chainFileAbsolutePath));
+        createChoiceOutcome(chainFileAbsolutePath, chain, modificationEvent.detail.content as CreateChoiceOutcome)
+          .then(v => changeSelectedContent({detail: {selectedContent: undefined}}))
+          .then(v => onChainSelectionChange(chainFileAbsolutePath));
         break;
       case 'createEffect':
-        createEffect(chainFileAbsolutePath, chain, modificationEvent.detail.content as CreateEffect).then(v => onChainSelectionChange(chainFileAbsolutePath));
+        createEffect(chainFileAbsolutePath, chain, modificationEvent.detail.content as CreateEffect)
+          .then(v => changeSelectedContent({detail: {selectedContent: undefined}}))
+          .then(v => onChainSelectionChange(chainFileAbsolutePath));
         break;
       case 'linkEffect':
-        linkEffect(chainFileAbsolutePath, chain, modificationEvent.detail.content as LinkEffect).then(v => onChainSelectionChange(chainFileAbsolutePath));
+        linkEffect(chainFileAbsolutePath, chain, modificationEvent.detail.content as LinkEffect)
+          .then(v => changeSelectedContent({detail: {selectedContent: undefined}}))
+          .then(v => onChainSelectionChange(chainFileAbsolutePath));
         break;
       case 'linkEvent':
-        linkEvent(chainFileAbsolutePath, chain, modificationEvent.detail.content as LinkEvent).then(v => onChainSelectionChange(chainFileAbsolutePath));
+        linkEvent(chainFileAbsolutePath, chain, modificationEvent.detail.content as LinkEvent)
+          .then(v => changeSelectedContent({detail: {selectedContent: undefined}}))
+          .then(v => onChainSelectionChange(chainFileAbsolutePath));
         break;
       default:
         throw Error('unhandled modification event: ' + modificationEvent.detail.type);
