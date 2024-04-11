@@ -35,5 +35,5 @@ you probably want to pull the game repository and set the following **environmen
 - quality of life
   - help with dialogue “ special character
     - we could add a linter, validating a text with rules: translation_id, dialogue begin/end, line breaks
-  - switch back to another view after creating choice, you might edit the old one by mistake and lose your work....
-  - visually highlight selected node
+  - ~switch back to another view after creating choice, you might edit the old one by mistake and lose your work....~
+  - ~visually highlight selected node~
