@@ -4,6 +4,8 @@
   import type {EventToDisplay} from '/@/model/todisplay/EventToDisplay';
   import {selectedContent} from '/@/chain-flow/svelte-flow-customizations/SelectedContentStore';
   import {isChoiceToDisplayId} from '/@/model/todisplay/ChoiceToDisplay';
+  import {faBan} from '@fortawesome/free-solid-svg-icons';
+  import {Fa} from 'svelte-fa';
 
   type $$Props = NodeProps;
 
@@ -25,17 +27,25 @@
         eventDisplayBlock.classList.remove('focused');
     }
   }
+
+  function isEventTerminal(event: EventToDisplay): boolean {
+    return (!event.choices || event.choices.length === 0) && (!event.next || event.next.length === 0);
+  }
 </script>
 
 <Handle type="target" position={Position.Left} style="background: #555;" {isConnectable} />
-<Handle
-  type="source"
-  position={Position.Right}
-  style={{ top: 10, background: '#555' }}
-  isConnectable={isConnectable}
-/>
+
+{#if !isEventTerminal(event)}
+  <Handle
+    type="source"
+    position={Position.Right}
+    style={{ top: 10, background: '#555' }}
+    isConnectable={isConnectable}
+  />
+{/if}
+
 <div>
-  <div class="eventDisplayBlock" bind:this={eventDisplayBlock}>
+  <div class="eventDisplayBlock" class:is-event-terminal={isEventTerminal(event)} bind:this={eventDisplayBlock}>
     <h4>{event.id}</h4>
     <p>
       {event.text.replace(/ #.*$/i, '')}
@@ -43,6 +53,9 @@
   </div>
   <OutplantEffects effects={event.effects} />
 </div>
+{#if isEventTerminal(event)}
+  <Fa class="is-event-terminal-icon" icon={faBan} />
+{/if}
 
 <style>
   :global(.svelte-flow__node-outplantEventNode) {
@@ -53,6 +66,13 @@
     font-size: 12px;
     background: #deab36;
     border: 1px solid #555;
+    text-align: center;
+    padding: 10px;
+  }
+
+  :global(.svelte-flow__node-outplantEventNode .eventDisplayBlock.is-event-terminal) {
+    border: 7px solid #afaeae;
+    border-style: ridge;
     text-align: center;
     padding: 10px;
   }
@@ -73,5 +93,11 @@
 
   :global(.svelte-flow__node-outplantEventNode .eventDisplayBlock.focused) {
     border: 10px solid #c300ff;
+  }
+
+  :global(.svelte-flow__node-outplantEventNode  .is-event-terminal-icon) {
+    margin-top: 25px;
+    margin-left: -5px;
+    color: #afaeae;
   }
 </style>
