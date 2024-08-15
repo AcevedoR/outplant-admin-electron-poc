@@ -37,7 +37,7 @@
 />
 <div>
   <div class="eventDisplayBlock" bind:this={eventDisplayBlock}>
-    {choice.text.replace(/ #.*$/i, '')}`
+    {choice.text.replace(/ #.*$/i, '')}
   </div>
   <OutplantEffects effects={choice.effects} />
 </div>
