@@ -1,6 +1,6 @@
 <script lang="ts">
   import type {EffectToDisplay} from '/@/model/todisplay/EffectToDisplay';
-  import {faDollarSign, faMinus, faPlus, faTree, faUser} from '@fortawesome/free-solid-svg-icons';
+  import {faDollarSign, faHourglassHalf, faMinus, faPlus, faTree, faUser} from '@fortawesome/free-solid-svg-icons';
   import {Fa} from 'svelte-fa';
   import type {ChangeTarget} from '/@/model/ChangeTarget';
 
@@ -27,7 +27,13 @@
         outplantEffect
         {effect.operation === 'add' ? 'positive-effect' : 'negative-effect'}
         {effect.wasActivated ? '':'disabled'}
+        {effect.type === 'permanent' ? 'permanent-effect': ''}
       ">
+        {#if effect.type === 'permanent'}
+          <div class="permanent-effect-icon">
+            <Fa icon={faHourglassHalf} />
+          </div>
+        {/if}
         <p>{effect.id}</p>
         <Fa class="operation-symbol" icon={effect.operation === 'add' ? faPlus : faMinus} />
         <p>{effect.value}
@@ -70,6 +76,14 @@
     filter: brightness(50%);
     border-bottom: #c300ff 1px solid;
     text-decoration: line-through;
+  }
+
+  :global(.outplantEffects .outplantEffect.permanent-effect) {
+    border: #afaeae 1px solid;
+  }
+
+  :global(.outplantEffects .outplantEffect .permanent-effect-icon) {
+    margin-right: 10px;
   }
 
   :global(.outplantEffects .outplantEffect p) {
