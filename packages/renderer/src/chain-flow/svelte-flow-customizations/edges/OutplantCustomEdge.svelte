@@ -59,11 +59,11 @@
   }
 
   function isStateCondition(condition: any) {
-    console.log("msdkfjgdhdk", condition)
-    if (!!condition) {
-      return condition.target === "population" || condition.target === "money" || condition.target === "ecology"
-    }
-    return false;
+    return condition?.target === "population" || condition?.target === "money" || condition?.target === "ecology"
+  }
+
+  function isAllOfCondition(condition: any) {
+    return !!condition?.allOf;
   }
 
 </script>
@@ -75,21 +75,31 @@
       style:transform="translate(-50%, -50%) translate({labelX}px,{labelY}px)"
       class="edge-label nodrag nopan"
     >
+    <div class="condition_div">
       {#if data.if && isStateCondition(data.if) }
-        <div class="condition_div">
           <span>if</span>
           <span><Fa icon={toIcon(data.if.target)} /></span>
           <span><Fa icon={toOperationIcon(data.if.comparator)} /></span>
           <span>{data.if.value}</span>
-        </div>
+      {:else if data.if && isAllOfCondition(data.if)}
+        {#if data.if.allOf.length === 2}
+            <span>if</span>
+            <span>{data.if.allOf[0].target}</span>
+            <span><Fa icon={toOperationIcon(data.if.allOf[0].comparator)} /></span>
+            <span>{data.if.allOf[0].value}</span>
+            <span>and</span>
+            <span>{data.if.allOf[1].target}</span>
+            <span><Fa icon={toOperationIcon(data.if.allOf[1].comparator)} /></span>
+            <span>{data.if.allOf[1].value}</span>
+        {/if}
       {:else if data.if}
-        <div class="condition_div">
           <span>if</span>
           <span>{data.if.target}</span>
           <span><Fa icon={toOperationIcon(data.if.comparator)} /></span>
           <span>{data.if.value}</span>
-        </div>
       {/if}
+    </div>
+
       {#if data.weight}
         <OutplantWeightIcon weight={data.weight}></OutplantWeightIcon>
       {/if}
