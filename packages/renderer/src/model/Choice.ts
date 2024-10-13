@@ -3,7 +3,7 @@ import type {ChoiceOutcome} from './ChoiceOutcome';
 export interface Choice {
   text: string;
   next: Array<ChoiceOutcome>;
-  effects: Record<string, boolean> | null;
+  effects?: Record<string, boolean>;
   if?: Condition;
 }
 

@@ -1,7 +1,8 @@
 <script lang="ts">
   import {BaseEdge, EdgeLabelRenderer, type EdgeProps, getBezierPath} from '@xyflow/svelte';
-  import type {Comparator, StateVariable} from '/@/model/Choice';
-  import type {IconDefinition} from '@fortawesome/free-solid-svg-icons';
+  import OutplantTimeIcon from '/@/chain-flow/svelte-flow-customizations/edges/OutplantTimeIcon.svelte';
+  import OutplantWeightIcon from '/@/chain-flow/svelte-flow-customizations/edges/OutplantWeightIcon.svelte';
+  import type { Comparator, StateVariable } from '/@/model/Choice';
   import {
     faDollarSign,
     faTree,
@@ -11,8 +12,9 @@
     faLessThanEqual,
     faGreaterThan,
     faLessThan,
+    type IconDefinition,
   } from '@fortawesome/free-solid-svg-icons';
-  import {Fa} from 'svelte-fa';
+  import Fa from 'svelte-fa';
 
   type $$Props = EdgeProps;
 
@@ -26,7 +28,6 @@
   export let markerEnd: $$Props['markerEnd'] = undefined;
   export let style: $$Props['style'] = undefined;
   export let data: $$Props['data'] = undefined;
-
 
   $: [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
@@ -45,7 +46,7 @@
     }[target];
   }
 
-  function toOperationChar(target: Comparator): IconDefinition {
+  function toOperationIcon(target: Comparator): IconDefinition {
     return {
       lt: faLessThan,
       lte: faLessThanEqual,
@@ -54,34 +55,48 @@
       gt: faGreaterThan,
     }[target];
   }
+
 </script>
 
 <BaseEdge path={edgePath} {markerEnd} {style} />
-{#if data && data.condition && data.condition.target && data.condition.value && data.condition.comparator}
+{#if data && (data.weight || data.in || data.if)}
   <EdgeLabelRenderer>
     <div
       style:transform="translate(-50%, -50%) translate({labelX}px,{labelY}px)"
       class="edge-label nodrag nopan"
     >
-      <span>if</span>
-      <span><Fa icon={toIcon(data.condition.target)} /></span>
-      <span><Fa icon={toOperationChar(data.condition.comparator)} /></span>
-      <span>{data.condition.value}</span>
+      {#if data.if}
+        <div class="condition_div">
+          <span>if</span>
+          <span><Fa icon={toIcon(data.if.target)} /></span>
+          <span><Fa icon={toOperationIcon(data.if.comparator)} /></span>
+          <span>{data.if.value}</span>
+        </div>
+      {/if}
+      {#if data.weight}
+        <OutplantWeightIcon weight={data.weight}></OutplantWeightIcon>
+      {/if}
+      {#if data.in}
+        <OutplantTimeIcon time={data.in}></OutplantTimeIcon>
+      {/if}
     </div>
   </EdgeLabelRenderer>
 {/if}
 
 <style>
   .edge-label {
+    display: flex;
+    flex-direction: column;
     position: absolute;
     background: none;
     border: rgba(224, 224, 224, 0.29) 1px dotted;
     padding: 5px;
-    border-radius: 100px;
+    border-radius: 10px;
     font-size: 12px;
+    align-items: center;
   }
 
-  div {
+  .condition_div {
     color: #c300ff;
     font-weight: bold;
     display: flex;
@@ -91,5 +106,9 @@
 
   span {
     margin: 0 0.5em 0 0;
+  }
+
+  span:last-child {
+    margin: 0;
   }
 </style>

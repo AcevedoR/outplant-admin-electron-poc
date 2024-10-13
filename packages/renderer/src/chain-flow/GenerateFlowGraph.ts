@@ -97,23 +97,23 @@ function create_node(opt: {
       choice: opt.choice,
     },
     position: {x: 0, y: 0},
-    // sourcePosition: Position.Right,
-    // targetPosition: Position.Left,
   };
 }
 
 function createCustomEdgeForOutcome(
   source: string,
   target: string,
-  next: {in: number | null; weight: number | null} | undefined,
+  next: {in?: number; weight?: number, if?: Condition} | undefined,
 ) {
   return {
     id: `${source}-->${target}`,
-    source: source,
-    target: target,
-    type: 'outplantCustomEdgeForOutcome',
+    source,
+    target,
+    type: 'outplantCustomEdge',
     data: {
-      next: next,
+      in: next?.in,
+      weight: next?.weight,
+      if: next?.if,
     },
   };
 }
@@ -127,9 +127,9 @@ function createCustomEdgeForChoice(
     id: `${source}-->${target}`,
     source,
     target,
-    type: 'outplantCustomEdgeForChoice',
+    type: 'outplantCustomEdge',
     data: {
-      condition,
+      if: condition,
     },
   };
 }

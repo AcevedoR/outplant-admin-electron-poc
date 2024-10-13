@@ -5,8 +5,8 @@ import {getFullEffects} from '/@/model/todisplay/EffectToDisplay';
 
 export interface NextToDisplay {
   event: string;
-  in: number | null;
-  weight: number | null;
+  in?: number;
+  weight?: number;
   effects: EffectToDisplay[];
 }
 

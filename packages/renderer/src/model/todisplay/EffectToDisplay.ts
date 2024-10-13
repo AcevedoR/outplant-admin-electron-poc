@@ -6,7 +6,7 @@ import type {Effect} from '/@/model/Effect';
 export interface EffectToDisplay {
   id: string;
   wasActivated: boolean;
-  description: string | null;
+  description?: string;
   operation: ChangeOperation;
   target: ChangeTarget;
   value: number;
@@ -14,7 +14,7 @@ export interface EffectToDisplay {
 }
 
 export function getFullEffects(
-  effectIDs: Record<string, boolean> | null,
+  effectIDs: Record<string, boolean> | undefined,
   chainEffects: Record<string, Effect>,
 ) {
   const populatedEffects: EffectToDisplay[] = [];

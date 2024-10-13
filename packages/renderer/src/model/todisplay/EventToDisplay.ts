@@ -12,9 +12,9 @@ import {fromNext} from '/@/model/todisplay/NextToDisplay';
 export interface EventToDisplay {
   id: string;
   text: string;
-  next: Array<NextToDisplay> | null;
+  next?: Array<NextToDisplay>;
   effects: EffectToDisplay[];
-  choices: Array<ChoiceToDisplay> | null;
+  choices?: Array<ChoiceToDisplay>;
 }
 
 /**
