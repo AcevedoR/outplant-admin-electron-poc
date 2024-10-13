@@ -13,7 +13,6 @@ export type StateCondition = {
   comparator: Comparator;
   target: StateVariable;
   value: number;
-
 };
 
 export type StateVariable = 'population' | 'ecology' | 'money';

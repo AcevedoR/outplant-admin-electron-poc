@@ -8,6 +8,7 @@
     faTree,
     faUser,
     faEquals,
+    faNotEqual,
     faGreaterThanEqual,
     faLessThanEqual,
     faGreaterThan,
@@ -53,7 +54,16 @@
       eq: faEquals,
       gte: faGreaterThanEqual,
       gt: faGreaterThan,
+      not: faNotEqual,
     }[target];
+  }
+
+  function isStateCondition(condition: any) {
+    console.log("msdkfjgdhdk", condition)
+    if (!!condition) {
+      return condition.target === "population" || condition.target === "money" || condition.target === "ecology"
+    }
+    return false;
   }
 
 </script>
@@ -65,10 +75,17 @@
       style:transform="translate(-50%, -50%) translate({labelX}px,{labelY}px)"
       class="edge-label nodrag nopan"
     >
-      {#if data.if}
+      {#if data.if && isStateCondition(data.if) }
         <div class="condition_div">
           <span>if</span>
           <span><Fa icon={toIcon(data.if.target)} /></span>
+          <span><Fa icon={toOperationIcon(data.if.comparator)} /></span>
+          <span>{data.if.value}</span>
+        </div>
+      {:else if data.if}
+        <div class="condition_div">
+          <span>if</span>
+          <span>{data.if.target}</span>
           <span><Fa icon={toOperationIcon(data.if.comparator)} /></span>
           <span>{data.if.value}</span>
         </div>
