@@ -15,7 +15,8 @@
   // 👇 this is important! You need to import the styles for Svelte Flow to work
   import '@xyflow/svelte/dist/style.css';
   import OutplantEventNode from './svelte-flow-customizations/nodes/OutplantEventNode.svelte';
-  import OutplantCustomEdge from './svelte-flow-customizations/edges/OutplantCustomEdge.svelte';
+  import OutplantCustomEdgeForOutcome from './svelte-flow-customizations/edges/OutplantCustomEdgeForOutcome.svelte';
+  import OutplantCustomEdgeForChoice from './svelte-flow-customizations/edges/OutplantCustomEdgeForChoice.svelte';
   import type {Chain} from '../model/Chain';
   import type {ChoiceToDisplay} from '/@/model/todisplay/ChoiceToDisplay';
   import type {EventToDisplay} from '/@/model/todisplay/EventToDisplay';
@@ -50,7 +51,8 @@
   };
 
   const edgeTypes = {
-    outplantCustomEdge: OutplantCustomEdge,
+    outplantCustomEdgeForOutcome: OutplantCustomEdgeForOutcome,
+    outplantCustomEdgeForChoice: OutplantCustomEdgeForChoice,
   };
 
   const dagreGraph = new dagre.graphlib.Graph();

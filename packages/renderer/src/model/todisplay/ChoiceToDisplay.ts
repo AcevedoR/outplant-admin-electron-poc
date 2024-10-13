@@ -1,7 +1,7 @@
 import type {ChoiceOutcomeToDisplay} from './ChoiceOutcomeToDisplay';
 import type {EffectToDisplay} from '/@/model/todisplay/EffectToDisplay';
 import {getFullEffects} from '/@/model/todisplay/EffectToDisplay';
-import type {Choice} from '/@/model/Choice';
+import type {Choice, Condition} from '/@/model/Choice';
 import type {Effect} from '/@/model/Effect';
 import type {ChoiceOutcome} from '/@/model/ChoiceOutcome';
 
@@ -10,6 +10,7 @@ export interface ChoiceToDisplay {
   text: string;
   next: Array<ChoiceOutcomeToDisplay>;
   effects: EffectToDisplay[];
+  if?: Condition;
 }
 
 export class ChoiceToDisplayId {
@@ -66,5 +67,6 @@ export function fromChoice(
     text: source.text,
     next: convertToChoiceOutcomeToDisplay(choiceToDisplayId, source.next, chainEffects),
     effects: getFullEffects(source.effects, chainEffects),
+    if: source.if,
   };
 }

@@ -3,6 +3,7 @@ import type {ChoiceToDisplay} from '../model/todisplay/ChoiceToDisplay';
 import {fromChoice} from '../model/todisplay/ChoiceToDisplay';
 import type {EventToDisplay} from '/@/model/todisplay/EventToDisplay';
 import {fromEvent} from '/@/model/todisplay/EventToDisplay';
+import type {Condition} from '/@/model/Choice';
 
 interface FlowGraph {
   nodes: Node[];
@@ -48,7 +49,7 @@ export function generateFlowGraph(chain: Chain): FlowGraph {
         const choice_id = choiceToDisplay.id.get();
         const choice_node_id = `${choice_id}`;
 
-        edges.push(create_edge(event_id, choice_node_id));
+        edges.push(createCustomEdgeForChoice(event_id, choice_node_id, choice.if));
         nodes.push(
           create_node({
             event_id: choice_node_id,
@@ -60,7 +61,7 @@ export function generateFlowGraph(chain: Chain): FlowGraph {
         // if choice has ChoiceOutcomes, link them to it
         if (choice.next && choice.next.length > 0) {
           for (const choice_outcome of choice.next) {
-            edges.push(create_custom_edge(choice_node_id, choice_outcome.event, choice_outcome));
+            edges.push(createCustomEdgeForOutcome(choice_node_id, choice_outcome.event, choice_outcome));
           }
         }
       }
@@ -69,7 +70,7 @@ export function generateFlowGraph(chain: Chain): FlowGraph {
     // if event has 'next' events, link them to it
     if (event.next && event.next.length > 0) {
       for (const next_event of event.next) {
-        edges.push(create_custom_edge(event_id, next_event.event, next_event));
+        edges.push(createCustomEdgeForOutcome(event_id, next_event.event, next_event));
       }
     }
 
@@ -101,16 +102,7 @@ function create_node(opt: {
   };
 }
 
-function create_edge(source: string, target: string) {
-  return {
-    id: `${source}-->${target}`,
-    source: source,
-    target: target,
-    type: 'default',
-  };
-}
-
-function create_custom_edge(
+function createCustomEdgeForOutcome(
   source: string,
   target: string,
   next: {in: number | null; weight: number | null} | undefined,
@@ -119,9 +111,25 @@ function create_custom_edge(
     id: `${source}-->${target}`,
     source: source,
     target: target,
-    type: 'outplantCustomEdge',
+    type: 'outplantCustomEdgeForOutcome',
     data: {
       next: next,
+    },
+  };
+}
+
+function createCustomEdgeForChoice(
+  source: string,
+  target: string,
+  condition: Condition | undefined,
+) {
+  return {
+    id: `${source}-->${target}`,
+    source,
+    target,
+    type: 'outplantCustomEdgeForChoice',
+    data: {
+      condition,
     },
   };
 }
