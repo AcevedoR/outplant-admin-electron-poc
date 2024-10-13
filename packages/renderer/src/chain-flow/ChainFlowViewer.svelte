@@ -115,6 +115,9 @@ This means that the parent container needs a height to render the flow.
 -->
 <div id="chain-flow" style:height="100vh">
   <SvelteFlow
+    style="background-color: #363636;
+    --xy-edge-stroke-default: pink;
+    --xy-edge-stroke-selected-default	: pink;"
     panOnScroll={true}
     colorMode="dark"
     {nodes}
@@ -128,7 +131,6 @@ This means that the parent container needs a height to render the flow.
     on:paneclick={(event) => changeSelectedContent(undefined)}
   >
     <Controls />
-    <Background variant={BackgroundVariant.Dots} />
     <MiniMap />
     <Panel position="top-right">
       <button on:click={() => onLayout('TB')}>vertical layout</button>
@@ -137,5 +139,4 @@ This means that the parent container needs a height to render the flow.
   </SvelteFlow>
 </div>
 <style>
-
 </style>

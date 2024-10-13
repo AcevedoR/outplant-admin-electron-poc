@@ -71,8 +71,6 @@
   }
 
   :global(.svelte-flow__node-outplantEventNode .eventDisplayBlock.is-event-terminal) {
-    border: 7px solid #afaeae;
-    border-style: ridge;
     text-align: center;
     padding: 10px;
   }
@@ -98,6 +96,6 @@
   :global(.svelte-flow__node-outplantEventNode  .is-event-terminal-icon) {
     margin-top: 25px;
     margin-left: -5px;
-    color: #afaeae;
+    color: #ff0000;
   }
 </style>
