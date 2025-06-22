@@ -141,6 +141,7 @@
     >
       <option value="population">population</option>
       <option value="ecology">ecology</option>
+      <option value="reputation">reputation</option>
       <option value="money">money</option>
     </Select>
     <Input

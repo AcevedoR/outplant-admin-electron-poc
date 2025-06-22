@@ -1,6 +1,6 @@
 <script lang="ts">
   import type {EffectToDisplay} from '/@/model/todisplay/EffectToDisplay';
-  import {faDollarSign, faHourglassHalf, faMinus, faPlus, faTree, faUser} from '@fortawesome/free-solid-svg-icons';
+  import {faDollarSign, faHourglassHalf, faMinus, faPlus, faTree, faUser, faComments} from '@fortawesome/free-solid-svg-icons';
   import {Fa} from 'svelte-fa';
   import type {ChangeTarget} from '/@/model/ChangeTarget';
 
@@ -12,6 +12,8 @@
         return faUser;
       case 'ecology':
         return faTree;
+      case 'reputation':
+        return faComments;
       case 'money':
         return faDollarSign;
       default:
